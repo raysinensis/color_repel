@@ -1,0 +1,13 @@
+```{r}
+library(tidyverse)
+source("../R/color_repel.R")
+```
+
+```{r}
+a <- readRDS("umap_gg.rds")
+b <- a + scale_color_manual(values = color_repel(a, sim = colorspace::tritan))
+cowplot::plot_grid(a, b, 
+                   labels = c("original", "color_repel"))
+ggsave("scRNAseqUMAP_example.png", width = 7, height = 3)
+```
+
