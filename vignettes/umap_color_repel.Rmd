@@ -11,3 +11,11 @@ cowplot::plot_grid(a, b,
 ggsave("scRNAseqUMAP_example.png", width = 7, height = 3)
 ```
 
+```{r}
+a <- readRDS("vln_gg.rds")
+b <- a + scale_fill_manual(values = color_repel(a, sim = colorspace::tritan, col = "fill"))
+cowplot::plot_grid(a, b, 
+                   labels = c("original", "color_repel"))
+ggsave("scRNAseqVln_example.png", width = 7, height = 3)
+```
+
