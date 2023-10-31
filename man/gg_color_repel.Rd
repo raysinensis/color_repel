@@ -7,6 +7,8 @@
 gg_color_repel(
   g,
   col = "colour",
+  sim = NULL,
+  severity = 0.5,
   verbose = FALSE,
   downsample = 10000,
   seed = 34
@@ -16,6 +18,10 @@ gg_color_repel(
 \item{g}{ggplot plot object}
 
 \item{col}{colour or fill in ggplot}
+
+\item{sim}{passing a colorbind simulation function if needed}
+
+\item{severity}{severity of the color vision defect, between 0 and 1}
 
 \item{verbose}{whether to print messages}
 

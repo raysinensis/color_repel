@@ -10,6 +10,7 @@ color_repel(
   groups = NULL,
   nsamp = NULL,
   sim = NULL,
+  severity = 0.5,
   verbose = FALSE,
   downsample = 10000,
   seed = 34,
@@ -26,6 +27,8 @@ color_repel(
 \item{nsamp}{how many random sampling color combinations to test, default 10000}
 
 \item{sim}{passing a colorbind simulation function if needed}
+
+\item{severity}{severity of the color vision defect, between 0 and 1}
 
 \item{verbose}{whether to print messages}
 

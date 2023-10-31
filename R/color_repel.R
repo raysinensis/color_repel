@@ -4,6 +4,7 @@
 #' @param groups groups corresponding to color/fill, default is inferred
 #' @param nsamp how many random sampling color combinations to test, default 10000
 #' @param sim passing a colorbind simulation function if needed
+#' @param severity severity of the color vision defect, between 0 and 1
 #' @param verbose whether to print messages
 #' @param downsample downsample when too many datapoints are present
 #' @param seed sampling randomization seed
@@ -15,6 +16,7 @@ color_repel <- function(g,
                         groups = NULL, 
                         nsamp = NULL, 
                         sim = NULL, 
+                        severity = 0.5,
                         verbose = FALSE, 
                         downsample = 10000, 
                         seed = 34,
@@ -23,23 +25,21 @@ color_repel <- function(g,
     message("extract original colors...")
   }
   g2 <- ggplot2::ggplot_build(g)
-  cols <- g2$data[[1]] %>%
-    arrange(group) %>%
-    pull(col) %>%
-    unique()
+  cols <- arrange(g2$data[[1]], group)
+  cols <- unique(pull(cols, col))
   orig_cols <- cols
 
   # deficiency simulation
   if (!is.null(sim)) {
-    cols <- do.call(sim, list(cols))
+    cols <- do.call(sim, c(list(cols), severity = list(severity)))
   }
   # cols <- colorspace::tritan(cols, severity = 0.5)
   # rgb matrix
-  colsm <- grDevices::col2rgb(cols) %>% t()
+  colsm <- t(grDevices::col2rgb(cols))
   # convert to lab
   colslab <- grDevices::convertColor(colsm, from = "sRGB", to = "Lab")
   # euclidean distance
-  coldist <- dist(colslab) %>% as.matrix()
+  coldist <- as.matrix(dist(colslab))
   coldist[coldist == 0] <- Inf
   coldist <- (coldist - min(coldist[coldist != 0])) / 1000
 
@@ -47,7 +47,7 @@ color_repel <- function(g,
     message("extract plot distances...")
   }
   if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
-    em <- g2$data[[1]] %>% select(x, y)
+    em <- select(g2$data[[1]], x, y)
     # clustering info
     # clust <- as.character(g2$data[[1]]$group)
     clust <- as.character(as.numeric(as.factor(as.character(g2$data[[1]][[col]]))))
@@ -71,9 +71,7 @@ color_repel <- function(g,
     cdist[cdist < max(cdist) / 100] <- max(cdist) / 100
     cdist[cdist > max(cdist) / 3] <- NA
   } else {
-    cdist <- data.frame(x = unique(g2$data[[1]]$group)) %>%
-      dist() %>%
-      as.matrix()
+    cdist <- as.matrix(dist(data.frame(x = unique(g2$data[[1]]$group))))
     cdist <- cdist^2
   }
 
@@ -90,9 +88,7 @@ color_repel <- function(g,
 matrix2_score <- function(dist1, dist2) {
   temp <- 1 / (dist1 * dist2) 
   temp[temp == Inf] <- NA
-  temp %>%
-    rowSums(na.rm = T) %>%
-    mean(na.rm = T)
+  mean(rowSums(temp, na.rm = T), na.rm = T)
 }
 
 matrix2_score_n <- function(dist1, 
@@ -110,13 +106,13 @@ matrix2_score_n <- function(dist1,
     seed <- seed + 1
     s[[i]] <- sample(1:ncol(dist2))
   }
-  s <- s %>% unique()
+  s <- unique(s)
   for (i in (length(s) + 1):n) {
     set.seed(seed)
     seed <- seed + 1
     s[[i]] <- sample(1:ncol(dist2))
   }
-  s <- s %>% unique()
+  s <- unique(s)
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
     score_temp <- matrix2_score(dist1, dist2[, ord_temp])
@@ -135,5 +131,5 @@ matrix2_score_n <- function(dist1,
     message("worst score: ", scoremax * scale1)
     message("optimal score: ", score1 * scale1)
   }
-  ord_temp
+  ord1
 }
