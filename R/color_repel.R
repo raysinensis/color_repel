@@ -113,8 +113,7 @@ matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2)) * 10, 1
       score1 <- score_temp
     }
   }
-  sss <<- score0
-  scale1 <<- 10 ^ ceiling(abs(log10(score0)))
+  scale1 <- 10 ^ ceiling(abs(log10(score0)))
   message("scale: ", scale1)
   message("original score: ", score0 * scale1)
   message("worst score: ", scoremax * scale1)
