@@ -1,3 +1,14 @@
+#' Reorder ggplot colors to maximize color differences in space
+#' @param g ggplot plot object
+#' @param coord coordinates, default is inferred
+#' @param groups groups corresponding to color/fill, default is inferred
+#' @param nsamp how many random sampling color combinations to test, default 10000
+#' @param sim passing a colorbind simulation function if needed
+#' @param verbose whether to print messages
+#' @param downsample downsample when too many datapoints are present
+#' @param col colour or fill in ggplot
+#' @return vector of reordered colors
+#' @export
 color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL, verbose = F, downsample = 10000, col = "colour") {
   if (verbose) {
     message("extract original colors...")
@@ -33,8 +44,8 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
       em <- res[[1]]
       clust <- res[[2]]
     }
-    message(dim(em))
-    message(length(clust))
+    # message(dim(em))
+    # message(length(clust))
     # min distance between clusters on plot
     cdist <- clustifyr::calc_distance(em, clust)
     if (verbose) {
