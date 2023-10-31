@@ -10,6 +10,11 @@ For work (single cell RNA-seq) I make and look at countless scatterplots. Though
 4. recolor
 
 ```
+devtools::install_github("https://github.com/raysinensis/color_repel")
+library(colorrepel)
+```
+
+```
 a <- Seurat::DimPlot(so, group.by = "type", pt.size = 0.5)
 b <- a + scale_color_manual(values = color_repel(a, sim = colorspace::tritan))
 cowplot::plot_grid(a, b, 
