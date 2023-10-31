@@ -235,3 +235,18 @@ get_labs <- function(g) {
   g2 <- ggplot2::ggplot_build(g)
   g2$plot$scales$scales[[1]]$get_labels()
 }
+
+check_colour_fill <- function(g) {
+  col <- "fill"
+  g2 <- ggplot2::ggplot_build(g)
+  cols <- arrange(g2$data[[1]], group)
+  cols <- unique(pull(cols, col))
+  if (length(cols) <= 1) {
+    if (col == "fill") {
+      col <- "colour"
+    } else {
+      col <- "fill"
+    }
+  }
+  col
+}

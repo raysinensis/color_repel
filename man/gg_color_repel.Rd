@@ -11,7 +11,8 @@ gg_color_repel(
   severity = 0.5,
   verbose = FALSE,
   downsample = 10000,
-  seed = 34
+  seed = 34,
+  autoswitch = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ gg_color_repel(
 \item{downsample}{downsample when too many datapoints are present}
 
 \item{seed}{sampling randomization seed}
+
+\item{autoswitch}{try to switch between colour and fill automatically}
 }
 \value{
 new ggplot object

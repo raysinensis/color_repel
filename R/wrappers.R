@@ -6,6 +6,7 @@
 #' @param verbose whether to print messages
 #' @param downsample downsample when too many datapoints are present
 #' @param seed sampling randomization seed
+#' @param autoswitch try to switch between colour and fill automatically
 #' @return new ggplot object
 #' @export
 gg_color_repel <- function(g, 
@@ -14,12 +15,20 @@ gg_color_repel <- function(g,
                            severity = 0.5,
                            verbose = FALSE,
                            downsample = 10000,
-                           seed = 34) {
-  .f <- paste0("scale_", col, "_manual")
+                           seed = 34,
+                           autoswitch = TRUE) {
   newcols <- color_repel(g, col = col, verbose = verbose,
                          downsample = downsample, seed = seed, 
-                         sim = sim, severity = severity)
+                         sim = sim, severity = severity,
+                         autoswitch = autoswitch)
+  
+  if (autoswitch) {
+    col <- check_colour_fill(g)
+  }
+  .f <- paste0("scale_", col, "_manual")
+  
   labs <- get_labs(g)
+  
   if (all(is.na(labs))) {
     suppressMessages(g + do.call(.f, c(values = list(newcols))))
   } else {

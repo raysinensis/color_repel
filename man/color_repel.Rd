@@ -14,7 +14,8 @@ color_repel(
   verbose = FALSE,
   downsample = 10000,
   seed = 34,
-  col = "colour"
+  col = "colour",
+  autoswitch = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ color_repel(
 \item{seed}{sampling randomization seed}
 
 \item{col}{colour or fill in ggplot}
+
+\item{autoswitch}{try to switch between colour and fill automatically}
 }
 \value{
 vector of reordered colors
