@@ -9,7 +9,14 @@
 #' @param col colour or fill in ggplot
 #' @return vector of reordered colors
 #' @export
-color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL, verbose = F, downsample = 10000, col = "colour") {
+color_repel <- function(g, 
+                        coord = NULL, 
+                        groups = NULL, 
+                        nsamp = NULL, 
+                        sim = NULL, 
+                        verbose = FALSE, 
+                        downsample = 10000, 
+                        col = "colour") {
   if (verbose) {
     message("extract original colors...")
   }
@@ -74,7 +81,7 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 10, 100000)
   }
-  res <- matrix2_score_n(cdist, coldist, n = nsamp)
+  res <- matrix2_score_n(cdist, coldist, n = nsamp, verbose = verbose)
   orig_cols[res]
 }
 
@@ -86,7 +93,10 @@ matrix2_score <- function(dist1, dist2) {
     mean(na.rm = T)
 }
 
-matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2)) * 10, 100000)) {
+matrix2_score_n <- function(dist1, 
+                            dist2, 
+                            n = min(factorial(ncol(dist2)) * 10, 100000),
+                            verbose = F) {
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
   score0 <- score1
@@ -95,13 +105,11 @@ matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2)) * 10, 1
   for (i in 1:n) {
     s[[i]] <- sample(1:ncol(dist2))
   }
-  # message(length(s))
   s <- s %>% unique()
   for (i in (length(s) + 1):n) {
     s[[i]] <- sample(1:ncol(dist2))
   }
   s <- s %>% unique()
-  # message(length(s))
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
     score_temp <- matrix2_score(dist1, dist2[, ord_temp])
@@ -113,10 +121,12 @@ matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2)) * 10, 1
       score1 <- score_temp
     }
   }
-  scale1 <- 10 ^ ceiling(abs(log10(score0)))
-  message("scale: ", scale1)
-  message("original score: ", score0 * scale1)
-  message("worst score: ", scoremax * scale1)
-  message("optimal score: ", score1 * scale1)
+  if (verbose) {
+    scale1 <- 10 ^ ceiling(abs(log10(score0)))
+    message("scale: ", scale1)
+    message("original score: ", score0 * scale1)
+    message("worst score: ", scoremax * scale1)
+    message("optimal score: ", score1 * scale1)
+  }
   ord_temp
 }

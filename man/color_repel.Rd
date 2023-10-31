@@ -10,7 +10,7 @@ color_repel(
   groups = NULL,
   nsamp = NULL,
   sim = NULL,
-  verbose = F,
+  verbose = FALSE,
   downsample = 10000,
   col = "colour"
 )
