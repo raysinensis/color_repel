@@ -22,4 +22,4 @@ cowplot::plot_grid(a, b,
 ```
 
 <img align="center" width="700" height="300" src="vignettes/scRNAseqUMAP_example.png">
-<img align="center" width="1800" height="400" src="vignettes/stackbar_example.png">
+<img align="center" width="900" height="200" src="vignettes/stackbar_example.png">
