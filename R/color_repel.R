@@ -6,6 +6,7 @@
 #' @param sim passing a colorbind simulation function if needed
 #' @param verbose whether to print messages
 #' @param downsample downsample when too many datapoints are present
+#' @param seed sampling randomization seed
 #' @param col colour or fill in ggplot
 #' @return vector of reordered colors
 #' @export
@@ -16,6 +17,7 @@ color_repel <- function(g,
                         sim = NULL, 
                         verbose = FALSE, 
                         downsample = 10000, 
+                        seed = 34,
                         col = "colour") {
   if (verbose) {
     message("extract original colors...")
@@ -51,7 +53,7 @@ color_repel <- function(g,
     clust <- as.character(as.numeric(as.factor(as.character(g2$data[[1]][[col]]))))
     if (nrow(em) > downsample) {
       frac <- downsample / nrow(em)
-      res <- by_cluster_sampling(em, clust, frac)
+      res <- by_cluster_sampling(em, clust, frac, seed = seed)
       em <- res[[1]]
       clust <- res[[2]]
     }
@@ -81,7 +83,7 @@ color_repel <- function(g,
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 10, 100000)
   }
-  res <- matrix2_score_n(cdist, coldist, n = nsamp, verbose = verbose)
+  res <- matrix2_score_n(cdist, coldist, n = nsamp, verbose = verbose, seed = seed)
   orig_cols[res]
 }
 
@@ -96,17 +98,22 @@ matrix2_score <- function(dist1, dist2) {
 matrix2_score_n <- function(dist1, 
                             dist2, 
                             n = min(factorial(ncol(dist2)) * 10, 100000),
-                            verbose = F) {
+                            verbose = F,
+                            seed = 34) {
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
   score0 <- score1
   scoremax <- score1
   s <- list()
   for (i in 1:n) {
+    set.seed(seed)
+    seed <- seed + 1
     s[[i]] <- sample(1:ncol(dist2))
   }
   s <- s %>% unique()
   for (i in (length(s) + 1):n) {
+    set.seed(seed)
+    seed <- seed + 1
     s[[i]] <- sample(1:ncol(dist2))
   }
   s <- s %>% unique()

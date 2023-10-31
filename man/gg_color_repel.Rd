@@ -4,7 +4,13 @@
 \alias{gg_color_repel}
 \title{Wrapper to reorder ggplot colors to maximize color differences in space}
 \usage{
-gg_color_repel(g, col = "colour", verbose = FALSE)
+gg_color_repel(
+  g,
+  col = "colour",
+  verbose = FALSE,
+  downsample = 10000,
+  seed = 34
+)
 }
 \arguments{
 \item{g}{ggplot plot object}
@@ -12,6 +18,10 @@ gg_color_repel(g, col = "colour", verbose = FALSE)
 \item{col}{colour or fill in ggplot}
 
 \item{verbose}{whether to print messages}
+
+\item{downsample}{downsample when too many datapoints are present}
+
+\item{seed}{sampling randomization seed}
 }
 \value{
 new ggplot object

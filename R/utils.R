@@ -2,16 +2,19 @@
 #' @param df expression matrix or data.frame
 #' @param vec vector of ids
 #' @param frac fraction 0-1 to downsample to
+#' @param seed sampling randomization seed
 #' @return list with new downsampled matrix/data.frame and id vector
 #' @examples
 #' res <- by_cluster_sampling(data.frame(y = c(1, 2, 3, 4, 5, 6)), vec = c(1, 2, 1, 2, 1, 2), frac = 0.5)
 #' @export
-by_cluster_sampling <- function(df, vec, frac) {
+by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   dfs <- split(df, vec)
   vecout <- c()
   dflist <- list()
   for (x in names(dfs)) {
     df1 <- dfs[[x]]
+    set.seed(seed)
+    seed <- seed + 1
     samp <- sample(1:nrow(df1), round((frac * nrow(df1))))
     em1 <- df1[samp, , drop = F]
     vec1 <- rep(x, round((frac * nrow(df1))))

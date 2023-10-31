@@ -4,7 +4,7 @@
 \alias{by_cluster_sampling}
 \title{Balanced downsampling of matrix/data.frame based on cluster assignment vector}
 \usage{
-by_cluster_sampling(df, vec, frac)
+by_cluster_sampling(df, vec, frac, seed = 34)
 }
 \arguments{
 \item{df}{expression matrix or data.frame}
@@ -12,6 +12,8 @@ by_cluster_sampling(df, vec, frac)
 \item{vec}{vector of ids}
 
 \item{frac}{fraction 0-1 to downsample to}
+
+\item{seed}{sampling randomization seed}
 }
 \value{
 list with new downsampled matrix/data.frame and id vector

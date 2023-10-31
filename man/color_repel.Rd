@@ -12,6 +12,7 @@ color_repel(
   sim = NULL,
   verbose = FALSE,
   downsample = 10000,
+  seed = 34,
   col = "colour"
 )
 }
@@ -29,6 +30,8 @@ color_repel(
 \item{verbose}{whether to print messages}
 
 \item{downsample}{downsample when too many datapoints are present}
+
+\item{seed}{sampling randomization seed}
 
 \item{col}{colour or fill in ggplot}
 }
