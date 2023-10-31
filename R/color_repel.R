@@ -40,7 +40,8 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
   if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
     em <- g2$data[[1]] %>% select(x, y)
     # clustering info
-    clust <- as.character(g2$data[[1]]$group)
+    # clust <- as.character(g2$data[[1]]$group)
+    clust <- as.character(as.numeric(as.factor(as.character(g2$data[[1]][[col]]))))
     if (nrow(em) > downsample) {
       frac <- downsample / nrow(em)
       res <- by_cluster_sampling(em, clust, frac)
@@ -50,11 +51,14 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
     # message(dim(em))
     # message(length(clust))
     # min distance between clusters on plot
-    cdist <- clustifyr::calc_distance(em, clust)
+    cdist <- suppressMessages(clustifyr::calc_distance(em, clust))
+    # if (!has_rownames(cdist)) {
+    #   rownames(cdist) <- str_c("cell",1:nrow(cdist))
+    # }
     if (verbose) {
       message("extract plot distances (part 2)...")
     }
-    cdist <- cdist %>% average_clusters_rowwise(metadata = clust, if_log = F, method = "min", output_log = F, trim = T)
+    cdist <- suppressMessages(average_clusters_rowwise(cdist,metadata = clust, if_log = F, method = "min", output_log = F, trim = T))
     cdist[cdist < max(cdist) / 100] <- max(cdist) / 100
     cdist[cdist > max(cdist) / 3] <- NA
   } else {
@@ -75,7 +79,9 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
 }
 
 matrix2_score <- function(dist1, dist2) {
-  1 / (dist1 * dist2) %>%
+  temp <- 1 / (dist1 * dist2) 
+  temp[temp == Inf] <- NA
+  temp %>%
     rowSums(na.rm = T) %>%
     mean(na.rm = T)
 }
@@ -83,6 +89,8 @@ matrix2_score <- function(dist1, dist2) {
 matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2)) * 10, 100000)) {
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
+  score0 <- score1
+  scoremax <- score1
   s <- list()
   for (i in 1:n) {
     s[[i]] <- sample(1:ncol(dist2))
@@ -97,10 +105,19 @@ matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2)) * 10, 1
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
     score_temp <- matrix2_score(dist1, dist2[, ord_temp])
+    if (score_temp > scoremax) {
+      scoremax <- score_temp
+    }
     if (score_temp < score1) {
       ord1 <- ord_temp
       score1 <- score_temp
     }
   }
+  sss <<- score0
+  scale1 <<- 10 ^ ceiling(abs(log10(score0)))
+  message("scale: ", scale1)
+  message("original score: ", score0 * scale1)
+  message("worst score: ", scoremax * scale1)
+  message("optimal score: ", score1 * scale1)
   ord_temp
 }
