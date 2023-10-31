@@ -17,6 +17,7 @@ For work (single cell RNA-seq) I make and look at countless plots. Though most p
 ```
 devtools::install_github("https://github.com/raysinensis/color_repel")
 library(colorrepel)
+?gg_color_repel # overall wrapper function
 ```
 
 ### Examples
