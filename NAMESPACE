@@ -3,6 +3,7 @@
 export(average_clusters_rowwise)
 export(by_cluster_sampling)
 export(color_repel)
+export(gg_color_repel)
 importFrom(matrixStats,colRanks)
 importFrom(matrixStats,rowMaxs)
 importFrom(matrixStats,rowMedians)
