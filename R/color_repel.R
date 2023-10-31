@@ -14,9 +14,12 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
     message("extract original colors...")
   }
   g2 <- ggplot2::ggplot_build(g)
-  cols <- g2$data[[1]] %>% arrange(group) %>% pull(col) %>% unique()
+  cols <- g2$data[[1]] %>%
+    arrange(group) %>%
+    pull(col) %>%
+    unique()
   orig_cols <- cols
-  
+
   # deficiency simulation
   if (!is.null(sim)) {
     cols <- do.call(sim, list(cols))
@@ -29,17 +32,17 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
   # euclidean distance
   coldist <- dist(colslab) %>% as.matrix()
   coldist[coldist == 0] <- Inf
-  coldist <- (coldist - min(coldist[coldist != 0]))/1000
-  
+  coldist <- (coldist - min(coldist[coldist != 0])) / 1000
+
   if (verbose) {
     message("extract plot distances...")
   }
   if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
-    em <- g2$data[[1]] %>% select(x,y)
+    em <- g2$data[[1]] %>% select(x, y)
     # clustering info
     clust <- as.character(g2$data[[1]]$group)
     if (nrow(em) > downsample) {
-      frac <- downsample/nrow(em)
+      frac <- downsample / nrow(em)
       res <- by_cluster_sampling(em, clust, frac)
       em <- res[[1]]
       clust <- res[[2]]
@@ -52,44 +55,48 @@ color_repel <- function(g, coord = NULL, groups = NULL, nsamp = NULL, sim = NULL
       message("extract plot distances (part 2)...")
     }
     cdist <- cdist %>% average_clusters_rowwise(metadata = clust, if_log = F, method = "min", output_log = F, trim = T)
-    cdist[cdist < max(cdist)/100] <- max(cdist)/100
-    cdist[cdist > max(cdist)/3] <- NA
+    cdist[cdist < max(cdist) / 100] <- max(cdist) / 100
+    cdist[cdist > max(cdist) / 3] <- NA
   } else {
-    cdist <- data.frame(x = unique(g2$data[[1]]$group)) %>% dist() %>% as.matrix()
-    cdist <- cdist ^ 2
+    cdist <- data.frame(x = unique(g2$data[[1]]$group)) %>%
+      dist() %>%
+      as.matrix()
+    cdist <- cdist^2
   }
-  
+
   if (verbose) {
     message("iterate color combinations...")
   }
   if (is.null(nsamp)) {
-    nsamp <- min(factorial(ncol(cdist))*10, 100000)
+    nsamp <- min(factorial(ncol(cdist)) * 10, 100000)
   }
   res <- matrix2_score_n(cdist, coldist, n = nsamp)
   orig_cols[res]
 }
 
 matrix2_score <- function(dist1, dist2) {
-  1/(dist1 * dist2) %>% rowSums(na.rm = T) %>% mean(na.rm = T)
+  1 / (dist1 * dist2) %>%
+    rowSums(na.rm = T) %>%
+    mean(na.rm = T)
 }
 
-matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2))*10, 100000)) {
+matrix2_score_n <- function(dist1, dist2, n = min(factorial(ncol(dist2)) * 10, 100000)) {
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
   s <- list()
   for (i in 1:n) {
     s[[i]] <- sample(1:ncol(dist2))
-  } 
-  #message(length(s))
+  }
+  # message(length(s))
   s <- s %>% unique()
   for (i in (length(s) + 1):n) {
     s[[i]] <- sample(1:ncol(dist2))
   }
   s <- s %>% unique()
-  #message(length(s))
+  # message(length(s))
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
-    score_temp <- matrix2_score(dist1, dist2[,ord_temp])
+    score_temp <- matrix2_score(dist1, dist2[, ord_temp])
     if (score_temp < score1) {
       ord1 <- ord_temp
       score1 <- score_temp
