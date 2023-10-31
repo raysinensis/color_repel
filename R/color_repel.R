@@ -130,6 +130,12 @@ matrix2_score_n <- function(dist1,
     s[[i]] <- sample(1:ncol(dist2))
   }
   s <- unique(s)
+  if (verbose) {
+    message("attempting ", length(s), " calcuations...")
+    if (length(s) == min(factorial(ncol(dist2)))) {
+      message("all color combos covered")
+    }
+  }
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
     score_temp <- matrix2_score(dist1, dist2[, ord_temp])
@@ -142,11 +148,11 @@ matrix2_score_n <- function(dist1,
     }
   }
   if (verbose) {
-    scale1 <- 10 ^ ceiling(abs(log10(score0)))
-    message("scale: ", scale1)
-    message("original score: ", score0 * scale1)
-    message("worst score: ", scoremax * scale1)
-    message("optimal score: ", score1 * scale1)
+    scale1 <- 10 ^ floor(log10(score0))
+    # message("scale: ", scale1)
+    message("original score: ", score0 / scale1)
+    message("worst score: ", scoremax / scale1)
+    message("optimal score: ", score1 / scale1)
   }
   ord1
 }
