@@ -16,13 +16,13 @@ Imports:
     grDevices,
     colorspace,
     clustifyr,
+    matrixStats,
+    Matrix,
+    stats,
     dplyr,
     stringr,
     tibble,
     tidyr,
-    stats,
-    Matrix,
-    ggplot2,
-    matrixStats
+    ggplot2
 URL: https://github.com/raysinensis/color_repel
 ByteCompile: true
