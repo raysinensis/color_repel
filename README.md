@@ -12,12 +12,14 @@ For work (single cell RNA-seq) I make and look at countless plots. Though most p
 3. find optimal assignments of color to above groups/clusters to avoid plotting visually similar colors near each other
 4. recolor
 
-### Examples
+### Installation
 
 ```
 devtools::install_github("https://github.com/raysinensis/color_repel")
 library(colorrepel)
 ```
+
+### Examples
 
 ```
 a <- Seurat::DimPlot(so, group.by = "type", pt.size = 0.5)
