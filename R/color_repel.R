@@ -27,6 +27,16 @@ color_repel <- function(g,
   g2 <- ggplot2::ggplot_build(g)
   cols <- arrange(g2$data[[1]], group)
   cols <- unique(pull(cols, col))
+  if (length(cols) <= 1) {
+    if (col == "fill") {
+      col <- "colour"
+    } else {
+      col <- "fill"
+    }
+    cols <- arrange(g2$data[[1]], group)
+    cols <- unique(pull(cols, col))
+    warning("Did not detect multiple colors, did you specify the correct mapping? Trying to autoswitch...")
+  }
   orig_cols <- cols
 
   # deficiency simulation

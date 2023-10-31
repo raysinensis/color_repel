@@ -42,3 +42,4 @@ cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow 
 
 <img align="center" width="900" height="200" src="vignettes/stackbar_example.png">
 
+<img align="center" width="700" height="300" src="vignettes/spatialdim_example.png">
