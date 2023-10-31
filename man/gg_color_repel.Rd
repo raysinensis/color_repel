@@ -4,12 +4,14 @@
 \alias{gg_color_repel}
 \title{Wrapper to reorder ggplot colors to maximize color differences in space}
 \usage{
-gg_color_repel(g, col = "colour")
+gg_color_repel(g, col = "colour", verbose = FALSE)
 }
 \arguments{
 \item{g}{ggplot plot object}
 
 \item{col}{colour or fill in ggplot}
+
+\item{verbose}{whether to print messages}
 }
 \value{
 new ggplot object

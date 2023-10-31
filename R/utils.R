@@ -223,3 +223,12 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
   }
   return(out)
 }
+
+#' Extract custom labels from ggplot object
+#' @param g ggplot object
+#' @return named vector of labels
+#' @export
+get_labs <- function(g) {
+  g2 <- ggplot2::ggplot_build(g)
+  g2$plot$scales$scales[[1]]$get_labels()
+}
