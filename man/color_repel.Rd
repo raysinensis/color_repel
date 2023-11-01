@@ -8,11 +8,11 @@ color_repel(
   g,
   coord = NULL,
   groups = NULL,
-  nsamp = NULL,
+  nsamp = 50000,
   sim = NULL,
   severity = 0.5,
   verbose = FALSE,
-  downsample = 10000,
+  downsample = 5000,
   seed = 34,
   col = "colour",
   autoswitch = TRUE
@@ -25,7 +25,7 @@ color_repel(
 
 \item{groups}{groups corresponding to color/fill, default is inferred}
 
-\item{nsamp}{how many random sampling color combinations to test, default 20000}
+\item{nsamp}{how many random sampling color combinations to test, default 50000}
 
 \item{sim}{passing a colorbind simulation function if needed}
 

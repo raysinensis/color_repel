@@ -10,8 +10,8 @@ gg_color_repel(
   sim = NULL,
   severity = 0.5,
   verbose = FALSE,
-  downsample = 10000,
-  nsamp = 20000,
+  downsample = 5000,
+  nsamp = 50000,
   seed = 34,
   autoswitch = TRUE
 )
@@ -29,7 +29,7 @@ gg_color_repel(
 
 \item{downsample}{downsample when too many datapoints are present}
 
-\item{nsamp}{how many random sampling color combinations to test, default 20000}
+\item{nsamp}{how many random sampling color combinations to test, default 50000}
 
 \item{seed}{sampling randomization seed}
 

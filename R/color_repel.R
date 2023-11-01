@@ -29,7 +29,9 @@ color_repel <- function(g,
   g2 <- ggplot2::ggplot_build(g)
   cols <- arrange(g2$data[[1]], group)
   cols <- unique(pull(cols, col))
-  
+  if (verbose) {
+    message(cols)
+  }
   if (autoswitch) {
     if (length(cols) <= 1) {
       if (col == "fill") {
@@ -135,7 +137,7 @@ matrix2_score_n <- function(dist1,
   }
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
-    dist3 <- dist2[, ord_temp]
+    dist3 <- dist2[ord_temp, ord_temp]
     score_temp <- matrix2_score(dist1, dist3)
     if (score_temp > scoremax) {
       scoremax <- score_temp
@@ -148,6 +150,7 @@ matrix2_score_n <- function(dist1,
   if (verbose) {
     scale1 <- 10 ^ floor(log10(score0))
     # message("scale: ", scale1)
+    message(ord1)
     message("original score: ", score0 / scale1)
     message("worst score: ", scoremax / scale1)
     message("optimal score: ", score1 / scale1)
