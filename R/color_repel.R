@@ -2,7 +2,7 @@
 #' @param g ggplot plot object
 #' @param coord coordinates, default is inferred
 #' @param groups groups corresponding to color/fill, default is inferred
-#' @param nsamp how many random sampling color combinations to test, default 10000
+#' @param nsamp how many random sampling color combinations to test, default 20000
 #' @param sim passing a colorbind simulation function if needed
 #' @param severity severity of the color vision defect, between 0 and 1
 #' @param verbose whether to print messages
@@ -56,7 +56,7 @@ color_repel <- function(g,
   # convert to lab
   colslab <- grDevices::convertColor(colsm, from = "sRGB", to = "Lab")
   # euclidean distance
-  coldist <- as.matrix(dist(colslab))
+  coldist <- as.matrix(stats::dist(colslab))
   coldist[coldist == 0] <- Inf
   coldist <- (coldist - min(coldist[coldist != 0])) / 1000
 
@@ -77,7 +77,7 @@ color_repel <- function(g,
     # message(dim(em))
     # message(length(clust))
     # min distance between clusters on plot
-    cdist <- suppressMessages(clustifyr::calc_distance(em, clust))
+    cdist <- suppressMessages(calc_distance(em, clust))
     # if (!has_rownames(cdist)) {
     #   rownames(cdist) <- str_c("cell",1:nrow(cdist))
     # }
@@ -88,7 +88,7 @@ color_repel <- function(g,
     cdist[cdist < max(cdist) / 100] <- max(cdist) / 100
     cdist[cdist > max(cdist) / 3] <- NA
   } else {
-    cdist <- as.matrix(dist(data.frame(x = unique(g2$data[[1]]$group))))
+    cdist <- as.matrix(stats::dist(data.frame(x = unique(g2$data[[1]]$group))))
     cdist <- cdist^2
   }
 
@@ -96,49 +96,45 @@ color_repel <- function(g,
     message("iterate color combinations...")
   }
   if (is.null(nsamp)) {
-    nsamp <- min(factorial(ncol(cdist)) * 10, 100000)
+    nsamp <- min(factorial(ncol(cdist)) * 5, 20000)
   }
-  res <- matrix2_score_n(cdist, coldist, n = nsamp, verbose = verbose, seed = seed)
+  res <- matrix2_score_n(1/cdist, 1/coldist, n = nsamp, verbose = verbose, seed = seed)
   orig_cols[res]
 }
 
 matrix2_score <- function(dist1, dist2) {
-  temp <- 1 / (dist1 * dist2) 
+  temp <- dist1 * dist2
   temp[temp == Inf] <- NA
-  mean(rowSums(temp, na.rm = T), na.rm = T)
+  # temp <- colSums(temp, na.rm = T)
+  mean(temp, na.rm = T)
 }
 
 matrix2_score_n <- function(dist1, 
                             dist2, 
-                            n = min(factorial(ncol(dist2)) * 10, 100000),
+                            n = min(factorial(ncol(dist2)) * 10, 20000),
                             verbose = F,
                             seed = 34) {
+  len <- ncol(dist2)
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
   score0 <- score1
   scoremax <- score1
   s <- list()
+  set.seed(seed)
   for (i in 1:n) {
-    set.seed(seed)
-    seed <- seed + 1
-    s[[i]] <- sample(1:ncol(dist2))
-  }
-  s <- unique(s)
-  for (i in (length(s) + 1):n) {
-    set.seed(seed)
-    seed <- seed + 1
-    s[[i]] <- sample(1:ncol(dist2))
+    s[[i]] <- sample(1:len)
   }
   s <- unique(s)
   if (verbose) {
     message("attempting ", length(s), " calcuations...")
-    if (length(s) == min(factorial(ncol(dist2)))) {
+    if (length(s) == min(factorial(len))) {
       message("all color combos covered")
     }
   }
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
-    score_temp <- matrix2_score(dist1, dist2[, ord_temp])
+    dist3 <- dist2[, ord_temp]
+    score_temp <- matrix2_score(dist1, dist3)
     if (score_temp > scoremax) {
       scoremax <- score_temp
     }
@@ -155,4 +151,26 @@ matrix2_score_n <- function(dist1,
     message("optimal score: ", score1 / scale1)
   }
   ord1
+}
+
+create_matrix_lookup <- function(mat1, mat2) {
+  res <- list()
+  for (i in 1:ncol(mat1)) {
+    for (j in 1:ncol(mat2)) {
+      res[[paste0(i, "-", j)]] <- 1/(mat1[, i, drop = T] * mat2[, j, drop = T])
+    }
+  }
+  res
+}
+
+matrix_lookup <- function(mat1, mat2, s) {
+   ml <- create_matrix_lookup(mat1, mat2)
+   scores <- c()
+   for (i in 1:length(s)) {
+     l <- str_c(1:length(s[[i]]), "-", s[[i]])
+     temp <- data.frame(ml[l])
+     temp[temp == Inf] <- NA
+     scores[i] <- mean(rowSums(temp, na.rm = T), na.rm = T)
+   }
+   scores
 }

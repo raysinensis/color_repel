@@ -15,9 +15,9 @@ RoxygenNote: 7.1.2
 Imports:
     grDevices,
     colorspace,
-    clustifyr,
     matrixStats,
     Matrix,
+    distances,
     stats,
     dplyr,
     stringr,

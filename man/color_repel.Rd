@@ -25,7 +25,7 @@ color_repel(
 
 \item{groups}{groups corresponding to color/fill, default is inferred}
 
-\item{nsamp}{how many random sampling color combinations to test, default 10000}
+\item{nsamp}{how many random sampling color combinations to test, default 20000}
 
 \item{sim}{passing a colorbind simulation function if needed}
 
