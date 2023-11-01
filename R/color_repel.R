@@ -66,7 +66,6 @@ color_repel <- function(g,
   if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
     em <- select(g2$data[[1]], x, y)
     # clustering info
-    # clust <- as.character(g2$data[[1]]$group)
     clust <- as.character(as.numeric(as.factor(as.character(g2$data[[1]][[col]]))))
     if (nrow(em) > downsample) {
       frac <- downsample / nrow(em)
@@ -74,13 +73,8 @@ color_repel <- function(g,
       em <- res[[1]]
       clust <- res[[2]]
     }
-    # message(dim(em))
-    # message(length(clust))
     # min distance between clusters on plot
     cdist <- suppressMessages(calc_distance(em, clust))
-    # if (!has_rownames(cdist)) {
-    #   rownames(cdist) <- str_c("cell",1:nrow(cdist))
-    # }
     if (verbose) {
       message("extract plot distances (part 2)...")
     }
@@ -104,9 +98,9 @@ color_repel <- function(g,
 
 matrix2_score <- function(dist1, dist2) {
   temp <- dist1 * dist2
-  temp[temp == Inf] <- NA
+  # temp[temp == Inf] <- NA
   # temp <- colSums(temp, na.rm = T)
-  mean(temp, na.rm = T)
+  sum(temp, na.rm = T)/(ncol(temp)^2-sum(is.na(temp)))
 }
 
 matrix2_score_n <- function(dist1, 
@@ -114,15 +108,18 @@ matrix2_score_n <- function(dist1,
                             n = min(factorial(ncol(dist2)) * 10, 20000),
                             verbose = F,
                             seed = 34) {
+  dist1[dist1 == Inf] <- NA
+  dist2[dist2 == Inf] <- NA
   len <- ncol(dist2)
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
   score0 <- score1
   scoremax <- score1
-  s <- list()
-  set.seed(seed)
+  s <- vector("list", n)
+  # set.seed(seed)
+  dqrng::dqset.seed(seed)
   for (i in 1:n) {
-    s[[i]] <- sample(1:len)
+    s[[i]] <- dqrng::dqsample.int(len, len)
   }
   s <- unique(s)
   if (verbose) {
@@ -170,7 +167,7 @@ matrix_lookup <- function(mat1, mat2, s) {
      l <- str_c(1:length(s[[i]]), "-", s[[i]])
      temp <- data.frame(ml[l])
      temp[temp == Inf] <- NA
-     scores[i] <- mean(rowSums(temp, na.rm = T), na.rm = T)
+     scores[i] <- .Internal(mean(rowSums(temp, na.rm = T), na.rm = T))
    }
    scores
 }
