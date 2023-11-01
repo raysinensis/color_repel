@@ -5,7 +5,7 @@
 #' @param severity severity of the color vision defect, between 0 and 1
 #' @param verbose whether to print messages
 #' @param downsample downsample when too many datapoints are present
-#' @param nsamp how many random sampling color combinations to test, default 20000
+#' @param nsamp how many random sampling color combinations to test, default 50000
 #' @param seed sampling randomization seed
 #' @param autoswitch try to switch between colour and fill automatically
 #' @return new ggplot object
@@ -15,8 +15,8 @@ gg_color_repel <- function(g,
                            sim = NULL,
                            severity = 0.5,
                            verbose = FALSE,
-                           downsample = 10000,
-                           nsamp = 20000,
+                           downsample = 5000,
+                           nsamp = 50000,
                            seed = 34,
                            autoswitch = TRUE) {
   newcols <- color_repel(g, col = col, verbose = verbose,

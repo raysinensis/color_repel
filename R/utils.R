@@ -305,7 +305,7 @@ average_clusters <- function(mat,
     if (!is.null(colnames(mat))) {
       cluster_ids <- split(colnames(mat), cluster_info)
     } else {
-      cluster_ids <<- split(1:length(cluster_info), cluster_info)
+      cluster_ids <- split(1:length(cluster_info), cluster_info)
     }
      
   } else if (is.data.frame(cluster_info) & !is.null(cluster_col)) {
@@ -422,7 +422,7 @@ average_clusters <- function(mat,
       }
     )
   } else if (method == "min") {
-    out <- lapply(
+    out <- map(
       cluster_ids,
       function(cell_ids) {
         # if (!all(cell_ids %in% colnames(mat))) {
@@ -432,7 +432,7 @@ average_clusters <- function(mat,
         # }
         mat_data <- mat[, cell_ids, drop = FALSE]
         # mat_data[mat_data == 0] <- NA
-        res <- matrixStats::rowMins(as.matrix(mat_data),
+        res <- matrixStats::rowMins(mat_data,
                                     na.rm = TRUE
         )
         res[is.na(res)] <- 0

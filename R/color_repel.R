@@ -2,7 +2,7 @@
 #' @param g ggplot plot object
 #' @param coord coordinates, default is inferred
 #' @param groups groups corresponding to color/fill, default is inferred
-#' @param nsamp how many random sampling color combinations to test, default 20000
+#' @param nsamp how many random sampling color combinations to test, default 50000
 #' @param sim passing a colorbind simulation function if needed
 #' @param severity severity of the color vision defect, between 0 and 1
 #' @param verbose whether to print messages
@@ -15,11 +15,11 @@
 color_repel <- function(g, 
                         coord = NULL, 
                         groups = NULL, 
-                        nsamp = NULL, 
+                        nsamp = 50000, 
                         sim = NULL, 
                         severity = 0.5,
                         verbose = FALSE, 
-                        downsample = 10000, 
+                        downsample = 5000, 
                         seed = 34,
                         col = "colour",
                         autoswitch = TRUE) {
@@ -96,11 +96,16 @@ color_repel <- function(g,
   orig_cols[res]
 }
 
+# matrix2_score <- function(dist1, dist2) {
+#   temp <- dist1 * dist2
+#   # temp[temp == Inf] <- NA
+#   # temp <- colSums(temp, na.rm = T)
+#   sum(temp, na.rm = T)/(ncol(temp)^2-sum(is.na(temp)))
+# }
+
 matrix2_score <- function(dist1, dist2) {
   temp <- dist1 * dist2
-  # temp[temp == Inf] <- NA
-  # temp <- colSums(temp, na.rm = T)
-  sum(temp, na.rm = T)/(ncol(temp)^2-sum(is.na(temp)))
+  max(temp, na.rm = T)
 }
 
 matrix2_score_n <- function(dist1, 
@@ -167,7 +172,7 @@ matrix_lookup <- function(mat1, mat2, s) {
      l <- str_c(1:length(s[[i]]), "-", s[[i]])
      temp <- data.frame(ml[l])
      temp[temp == Inf] <- NA
-     scores[i] <- .Internal(mean(rowSums(temp, na.rm = T), na.rm = T))
+     scores[i] <- mean(rowSums(temp, na.rm = T), na.rm = T)
    }
    scores
 }
