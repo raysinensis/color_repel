@@ -22,6 +22,8 @@ library(colorrepel)
 
 ### Examples
 
+Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
+
 ```
 a <- Seurat::DimPlot(so, group.by = "type", pt.size = 0.5)
 b <- a + scale_color_manual(values = color_repel(a, sim = colorspace::tritan))
