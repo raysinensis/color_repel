@@ -71,7 +71,8 @@ color_repel <- function(g,
   if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
     em <- select(g2$data[[1]], x, y)
     # clustering info
-    clust <- as.character(as.numeric(as.factor(as.character(g2$data[[1]][[col]]))))
+    clust <<- as.character(g2$data[[1]][[col]])
+    clust <- as.character(as.numeric(factor(clust, levels = orig_cols)))
     if (nrow(em) > downsample) {
       frac <- downsample / nrow(em)
       res <- by_cluster_sampling(em, clust, frac, seed = seed)
@@ -83,7 +84,10 @@ color_repel <- function(g,
     if (verbose) {
       message("extract plot distances (part 2)...")
     }
-    cdist <- suppressMessages(average_clusters_rowwise(cdist,metadata = clust, if_log = F, method = "min", output_log = F, trim = T))
+    rownames(cdist) <- as.character(1:nrow(cdist))
+    cdist <- suppressMessages(average_clusters_rowwise(cdist, metadata = clust, if_log = F, method = "min", output_log = F, trim = T))
+    ord <- gtools::mixedorder(colnames(cdist))
+    cdist <- cdist[ord, ord]
     cdist[cdist < max(cdist) / 100] <- max(cdist) / 100
     cdist[cdist > max(cdist) / 3] <- NA
   } else {
@@ -121,12 +125,8 @@ matrix2_score_n <- function(dist1,
   dist1[dist1 == Inf] <- NA
   dist2[dist2 == Inf] <- NA
   len <- ncol(dist2)
-  ord1 <- 1:ncol(dist2)
-  score1 <- matrix2_score(dist1, dist2)
-  score0 <- score1
-  scoremax <- score1
+
   s <- vector("list", n)
-  # set.seed(seed)
   dqrng::dqset.seed(seed)
   for (i in 1:n) {
     s[[i]] <- dqrng::dqsample.int(len, len)
@@ -138,6 +138,12 @@ matrix2_score_n <- function(dist1,
       message("all color combos covered")
     }
   }
+  
+  ord1 <- 1:ncol(dist2)
+  score1 <- matrix2_score(dist1, dist2)
+  score0 <- score1
+  scoremax <- score1
+  
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
     dist3 <- dist2[ord_temp, ord_temp]

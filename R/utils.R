@@ -55,9 +55,9 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
       mat <- mat[cluster_info[[cell_col]], ]
     }
   }
-  if (is.null(rownames(mat))) {
-    stop("The input matrix does not have rownames.\n", "Check colnames() of input object")
-  }
+  # if (is.null(rownames(mat))) {
+  #   stop("The input matrix does not have rownames.\n", "Check colnames() of input object")
+  # }
   if (is.vector(cluster_info)) {
     if (nrow(mat) != length(cluster_info)) {
       stop("vector of cluster assignments does not match the number of rows in the matrix",
@@ -248,13 +248,14 @@ check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswit
     } else {
       col <- "fill"
     }
+    cols <- arrange(g2$data[[1]], group)
+    cols <- unique(cols[[col]])
   }
   if (return_col) {
     list(col = col, cols = cols)
   } else {
     col
   }
-  
 }
 
 calc_distance <- function(
