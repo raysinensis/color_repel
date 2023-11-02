@@ -10,6 +10,7 @@
 #' @param seed sampling randomization seed
 #' @param col colour or fill in ggplot
 #' @param autoswitch try to switch between colour and fill automatically
+#' @param out_worst output the worst combination instead of best
 #' @return vector of reordered colors
 #' @export
 color_repel <- function(g, 
@@ -22,7 +23,8 @@ color_repel <- function(g,
                         downsample = 5000, 
                         seed = 34,
                         col = "colour",
-                        autoswitch = TRUE) {
+                        autoswitch = TRUE,
+                        out_worst = FALSE) {
   if (verbose) {
     message("extract original colors...")
   }
@@ -69,7 +71,7 @@ color_repel <- function(g,
     message("extract plot distances...")
   }
   if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
-    em <- select(g2$data[[1]], x, y)
+    em <- dplyr::select(g2$data[[1]], x, y)
     # clustering info
     clust <<- as.character(g2$data[[1]][[col]])
     clust <- as.character(as.numeric(factor(clust, levels = orig_cols)))
@@ -101,7 +103,7 @@ color_repel <- function(g,
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 5, 20000)
   }
-  res <- matrix2_score_n(1/cdist, 1/coldist, n = nsamp, verbose = verbose, seed = seed)
+  res <- matrix2_score_n(1/cdist, 1/coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
   orig_cols[res]
 }
 
@@ -121,7 +123,8 @@ matrix2_score_n <- function(dist1,
                             dist2, 
                             n = min(factorial(ncol(dist2)) * 10, 20000),
                             verbose = F,
-                            seed = 34) {
+                            seed = 34,
+                            out_worst = FALSE) {
   dist1[dist1 == Inf] <- NA
   dist2[dist2 == Inf] <- NA
   len <- ncol(dist2)
@@ -150,9 +153,14 @@ matrix2_score_n <- function(dist1,
     score_temp <- matrix2_score(dist1, dist3)
     if (score_temp > scoremax) {
       scoremax <- score_temp
+      if (out_worst) {
+        ord1 <- ord_temp
+      }
     }
     if (score_temp < score1) {
-      ord1 <- ord_temp
+      if (!out_worst) {
+        ord1 <- ord_temp
+      }
       score1 <- score_temp
     }
   }

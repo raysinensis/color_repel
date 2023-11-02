@@ -8,9 +8,10 @@
 #' @param nsamp how many random sampling color combinations to test, default 50000
 #' @param seed sampling randomization seed
 #' @param autoswitch try to switch between colour and fill automatically
+#' @param out_worst output the worst combination instead of best
 #' @return new ggplot object
 #' @export
-gg_color_repel <- function(g, 
+gg_color_repel <- function(g = ggplot2::last_plot(), 
                            col = "colour", 
                            sim = NULL,
                            severity = 0.5,
@@ -18,11 +19,13 @@ gg_color_repel <- function(g,
                            downsample = 5000,
                            nsamp = 50000,
                            seed = 34,
-                           autoswitch = TRUE) {
+                           autoswitch = TRUE,
+                           out_worst = FALSE) {
   newcols <- color_repel(g, col = col, verbose = verbose,
                          downsample = downsample, nsamp = nsamp, seed = seed, 
                          sim = sim, severity = severity,
-                         autoswitch = autoswitch)
+                         autoswitch = autoswitch,
+                         out_worst = out_worst)
   
   if (autoswitch) {
     col <- check_colour_mapping(g, col = col, autoswitch = autoswitch)

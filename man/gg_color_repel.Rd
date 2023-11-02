@@ -5,7 +5,7 @@
 \title{Wrapper to reorder ggplot colors to maximize color differences in space}
 \usage{
 gg_color_repel(
-  g,
+  g = ggplot2::last_plot(),
   col = "colour",
   sim = NULL,
   severity = 0.5,
@@ -13,7 +13,8 @@ gg_color_repel(
   downsample = 5000,
   nsamp = 50000,
   seed = 34,
-  autoswitch = TRUE
+  autoswitch = TRUE,
+  out_worst = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ gg_color_repel(
 \item{seed}{sampling randomization seed}
 
 \item{autoswitch}{try to switch between colour and fill automatically}
+
+\item{out_worst}{output the worst combination instead of best}
 }
 \value{
 new ggplot object

@@ -15,7 +15,8 @@ color_repel(
   downsample = 5000,
   seed = 34,
   col = "colour",
-  autoswitch = TRUE
+  autoswitch = TRUE,
+  out_worst = FALSE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ color_repel(
 \item{col}{colour or fill in ggplot}
 
 \item{autoswitch}{try to switch between colour and fill automatically}
+
+\item{out_worst}{output the worst combination instead of best}
 }
 \value{
 vector of reordered colors
