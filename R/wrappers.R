@@ -11,8 +11,8 @@
 #' @param out_worst output the worst combination instead of best
 #' @return new ggplot object
 #' @export
-gg_color_repel <- function(g = ggplot2::last_plot(), 
-                           col = "colour", 
+gg_color_repel <- function(g = ggplot2::last_plot(),
+                           col = "colour",
                            sim = NULL,
                            severity = 0.5,
                            verbose = FALSE,
@@ -21,19 +21,21 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            seed = 34,
                            autoswitch = TRUE,
                            out_worst = FALSE) {
-  newcols <- color_repel(g, col = col, verbose = verbose,
-                         downsample = downsample, nsamp = nsamp, seed = seed, 
-                         sim = sim, severity = severity,
-                         autoswitch = autoswitch,
-                         out_worst = out_worst)
-  
+  newcols <- color_repel(g,
+    col = col, verbose = verbose,
+    downsample = downsample, nsamp = nsamp, seed = seed,
+    sim = sim, severity = severity,
+    autoswitch = autoswitch,
+    out_worst = out_worst
+  )
+
   if (autoswitch) {
     col <- check_colour_mapping(g, col = col, autoswitch = autoswitch)
   }
   .f <- paste0("scale_", col, "_manual")
-  
+
   labs <- get_labs(g)
-  
+
   if (all(is.na(labs))) {
     suppressMessages(g + do.call(.f, c(values = list(newcols))))
   } else {

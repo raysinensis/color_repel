@@ -259,24 +259,26 @@ check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswit
 }
 
 calc_distance <- function(
-  coord,
-  metadata,
-  cluster_col = "cluster",
-  collapse_to_cluster = FALSE) {
+    coord,
+    metadata,
+    cluster_col = "cluster",
+    collapse_to_cluster = FALSE) {
   distm <- distances::distances(coord)
   res <- average_clusters(distm,
-                          metadata,
-                          cluster_col,
-                          if_log = FALSE,
-                          output_log = FALSE,
-                          method = "min")
+    metadata,
+    cluster_col,
+    if_log = FALSE,
+    output_log = FALSE,
+    method = "min"
+  )
   if (collapse_to_cluster) {
     res2 <- average_clusters(t(res),
-                             metadata,
-                             cluster_col,
-                             if_log = FALSE,
-                             output_log = FALSE,
-                             method = "min")
+      metadata,
+      cluster_col,
+      if_log = FALSE,
+      output_log = FALSE,
+      method = "min"
+    )
     res2
   } else {
     res
@@ -299,15 +301,15 @@ average_clusters <- function(mat,
       mat <- mat[, cluster_info[[cell_col]]]
     }
   }
-  
+
   # if(is.null(colnames(mat))){
-  #   stop("The input matrix does not have colnames.\n", 
+  #   stop("The input matrix does not have colnames.\n",
   #        "Check colnames() of input object")
   # }
   if (is.vector(cluster_info)) {
     if (ncol(mat) != length(cluster_info)) {
       stop("vector of cluster assignments does not match the number of columns in the matrix",
-           call. = FALSE
+        call. = FALSE
       )
     }
     if (!is.null(colnames(mat))) {
@@ -315,13 +317,12 @@ average_clusters <- function(mat,
     } else {
       cluster_ids <- split(1:length(cluster_info), cluster_info)
     }
-     
   } else if (is.data.frame(cluster_info) & !is.null(cluster_col)) {
     if (!is.null(cluster_col) &&
-        !(cluster_col %in% colnames(metadata))) {
+      !(cluster_col %in% colnames(metadata))) {
       stop("given `cluster_col` is not a column in `metadata`", call. = FALSE)
     }
-    
+
     cluster_info_temp <- cluster_info[[cluster_col]]
     if (is.factor(cluster_info_temp)) {
       cluster_info_temp <- droplevels(cluster_info_temp)
@@ -331,29 +332,29 @@ average_clusters <- function(mat,
     cluster_info <- as.character(cluster_info)
     if (ncol(mat) != length(cluster_info)) {
       stop("vector of cluster assignments does not match the number of columns in the matrix",
-           call. = FALSE
+        call. = FALSE
       )
     }
     cluster_ids <- split(colnames(mat), cluster_info)
   } else {
     stop("metadata not formatted correctly,
          supply either a vector or a dataframe",
-         call. = FALSE
+      call. = FALSE
     )
   }
-  
+
   if (subclusterpower > 0) {
     cluster_ids <-
       overcluster(mat, cluster_ids, power = subclusterpower)
   }
-  
+
   if (method == "mean") {
     out <- lapply(
       cluster_ids,
       function(cell_ids) {
         if (!all(cell_ids %in% colnames(mat))) {
           stop("cell ids not found in input matrix",
-               call. = FALSE
+            call. = FALSE
           )
         }
         if (if_log) {
@@ -374,13 +375,13 @@ average_clusters <- function(mat,
       function(cell_ids) {
         if (!all(cell_ids %in% colnames(mat))) {
           stop("cell ids not found in input matrix",
-               call. = FALSE
+            call. = FALSE
           )
         }
         mat_data <- mat[, cell_ids, drop = FALSE]
         # mat_data[mat_data == 0] <- NA
         res <- matrixStats::rowMedians(as.matrix(mat_data),
-                                       na.rm = TRUE
+          na.rm = TRUE
         )
         res[is.na(res)] <- 0
         names(res) <- rownames(mat_data)
@@ -393,20 +394,23 @@ average_clusters <- function(mat,
       function(cell_ids) {
         if (!all(cell_ids %in% colnames(mat))) {
           stop("cell ids not found in input matrix",
-               call. = FALSE
+            call. = FALSE
           )
         }
         mat_data <- mat[, cell_ids, drop = FALSE]
         # mat_data[mat_data == 0] <- NA
-        res1 <- matrixStats::rowQuantiles(as.matrix(mat_data), 
-                                          probs = 0.25,
-                                          na.rm = TRUE)
-        res2 <- matrixStats::rowQuantiles(as.matrix(mat_data), 
-                                          probs = 0.5,
-                                          na.rm = TRUE)
-        res3 <- matrixStats::rowQuantiles(as.matrix(mat_data), 
-                                          probs = 0.75,
-                                          na.rm = TRUE)
+        res1 <- matrixStats::rowQuantiles(as.matrix(mat_data),
+          probs = 0.25,
+          na.rm = TRUE
+        )
+        res2 <- matrixStats::rowQuantiles(as.matrix(mat_data),
+          probs = 0.5,
+          na.rm = TRUE
+        )
+        res3 <- matrixStats::rowQuantiles(as.matrix(mat_data),
+          probs = 0.75,
+          na.rm = TRUE
+        )
         res <- 0.5 * res2 + 0.25 * res1 + 0.25 * res3
         res[is.na(res)] <- 0
         names(res) <- rownames(mat_data)
@@ -419,7 +423,7 @@ average_clusters <- function(mat,
       function(cell_ids) {
         if (!all(cell_ids %in% colnames(mat))) {
           stop("cell ids not found in input matrix",
-               call. = FALSE
+            call. = FALSE
           )
         }
         mat_data <- mat[, cell_ids, drop = FALSE]
@@ -441,7 +445,7 @@ average_clusters <- function(mat,
         mat_data <- mat[, cell_ids, drop = FALSE]
         # mat_data[mat_data == 0] <- NA
         res <- matrixStats::rowMins(mat_data,
-                                    na.rm = TRUE
+          na.rm = TRUE
         )
         res[is.na(res)] <- 0
         names(res) <- rownames(mat_data)
@@ -454,13 +458,13 @@ average_clusters <- function(mat,
       function(cell_ids) {
         if (!all(cell_ids %in% colnames(mat))) {
           stop("cell ids not found in input matrix",
-               call. = FALSE
+            call. = FALSE
           )
         }
         mat_data <- mat[, cell_ids, drop = FALSE]
         # mat_data[mat_data == 0] <- NA
         res <- matrixStats::rowMaxs(as.matrix(mat_data),
-                                    na.rm = TRUE
+          na.rm = TRUE
         )
         res[is.na(res)] <- 0
         names(res) <- rownames(mat_data)
@@ -468,12 +472,12 @@ average_clusters <- function(mat,
       }
     )
   }
-  
+
   out <- do.call(cbind, out)
   if (low_threshold > 0) {
     fil <- vapply(cluster_ids,
-                  FUN = length,
-                  FUN.VALUE = numeric(1)
+      FUN = length,
+      FUN.VALUE = numeric(1)
     ) >= low_threshold
     if (!all(as.vector(fil))) {
       message(
@@ -485,8 +489,8 @@ average_clusters <- function(mat,
     out <- out[, as.vector(fil)]
   } else {
     fil <- vapply(cluster_ids,
-                  FUN = length,
-                  FUN.VALUE = numeric(1)
+      FUN = length,
+      FUN.VALUE = numeric(1)
     ) >= 10
     if (!all(as.vector(fil))) {
       message(
@@ -500,13 +504,13 @@ average_clusters <- function(mat,
     expr_mat <- out
     expr_df <- as.matrix(expr_mat)
     df_temp <- t(matrixStats::colRanks(-expr_df,
-                                       ties.method = "average"
+      ties.method = "average"
     ))
     rownames(df_temp) <- rownames(expr_mat)
     colnames(df_temp) <- colnames(expr_mat)
     expr_mat[df_temp > cut_n] <- 0
     out <- expr_mat
   }
-  
+
   return(out)
 }

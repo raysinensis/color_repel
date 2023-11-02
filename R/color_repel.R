@@ -13,14 +13,14 @@
 #' @param out_worst output the worst combination instead of best
 #' @return vector of reordered colors
 #' @export
-color_repel <- function(g, 
-                        coord = NULL, 
-                        groups = NULL, 
-                        nsamp = 50000, 
-                        sim = NULL, 
+color_repel <- function(g,
+                        coord = NULL,
+                        groups = NULL,
+                        nsamp = 50000,
+                        sim = NULL,
                         severity = 0.5,
-                        verbose = FALSE, 
-                        downsample = 5000, 
+                        verbose = FALSE,
+                        downsample = 5000,
                         seed = 34,
                         col = "colour",
                         autoswitch = TRUE,
@@ -73,7 +73,7 @@ color_repel <- function(g,
   if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
     em <- dplyr::select(g2$data[[1]], x, y)
     # clustering info
-    clust <<- as.character(g2$data[[1]][[col]])
+    clust <- as.character(g2$data[[1]][[col]])
     clust <- as.character(as.numeric(factor(clust, levels = orig_cols)))
     if (nrow(em) > downsample) {
       frac <- downsample / nrow(em)
@@ -103,7 +103,7 @@ color_repel <- function(g,
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 5, 20000)
   }
-  res <- matrix2_score_n(1/cdist, 1/coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
+  res <- matrix2_score_n(1 / cdist, 1 / coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
   orig_cols[res]
 }
 
@@ -119,8 +119,8 @@ matrix2_score <- function(dist1, dist2) {
   max(temp, na.rm = T)
 }
 
-matrix2_score_n <- function(dist1, 
-                            dist2, 
+matrix2_score_n <- function(dist1,
+                            dist2,
                             n = min(factorial(ncol(dist2)) * 10, 20000),
                             verbose = F,
                             seed = 34,
@@ -141,12 +141,12 @@ matrix2_score_n <- function(dist1,
       message("all color combos covered")
     }
   }
-  
+
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
   score0 <- score1
   scoremax <- score1
-  
+
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
     dist3 <- dist2[ord_temp, ord_temp]
@@ -165,7 +165,7 @@ matrix2_score_n <- function(dist1,
     }
   }
   if (verbose) {
-    scale1 <- 10 ^ floor(log10(score0))
+    scale1 <- 10^floor(log10(score0))
     # message("scale: ", scale1)
     # message(ord1)
     message("original score (scaled): ", score0 / scale1)
@@ -179,20 +179,20 @@ create_matrix_lookup <- function(mat1, mat2) {
   res <- list()
   for (i in 1:ncol(mat1)) {
     for (j in 1:ncol(mat2)) {
-      res[[paste0(i, "-", j)]] <- 1/(mat1[, i, drop = T] * mat2[, j, drop = T])
+      res[[paste0(i, "-", j)]] <- 1 / (mat1[, i, drop = T] * mat2[, j, drop = T])
     }
   }
   res
 }
 
 matrix_lookup <- function(mat1, mat2, s) {
-   ml <- create_matrix_lookup(mat1, mat2)
-   scores <- c()
-   for (i in 1:length(s)) {
-     l <- str_c(1:length(s[[i]]), "-", s[[i]])
-     temp <- data.frame(ml[l])
-     temp[temp == Inf] <- NA
-     scores[i] <- mean(rowSums(temp, na.rm = T), na.rm = T)
-   }
-   scores
+  ml <- create_matrix_lookup(mat1, mat2)
+  scores <- c()
+  for (i in 1:length(s)) {
+    l <- str_c(1:length(s[[i]]), "-", s[[i]])
+    temp <- data.frame(ml[l])
+    temp[temp == Inf] <- NA
+    scores[i] <- mean(rowSums(temp, na.rm = T), na.rm = T)
+  }
+  scores
 }
