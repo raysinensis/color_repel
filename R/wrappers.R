@@ -25,7 +25,7 @@ gg_color_repel <- function(g,
                          autoswitch = autoswitch)
   
   if (autoswitch) {
-    col <- check_colour_fill(g)
+    col <- check_colour_mapping(g, col = col, autoswitch = autoswitch)
   }
   .f <- paste0("scale_", col, "_manual")
   

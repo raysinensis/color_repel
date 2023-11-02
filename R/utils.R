@@ -235,19 +235,26 @@ get_labs <- function(g) {
   g2$plot$scales$scales[[1]]$get_labels()
 }
 
-check_colour_fill <- function(g) {
-  col <- "fill"
+check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE) {
   g2 <- ggplot2::ggplot_build(g)
   cols <- arrange(g2$data[[1]], group)
-  cols <- unique(pull(cols, col))
+  cols <- unique(cols[[col]])
   if (length(cols) <= 1) {
+    if (!autoswitch) {
+      stop("only 1 colour detected, please check mapping")
+    }
     if (col == "fill") {
       col <- "colour"
     } else {
       col <- "fill"
     }
   }
-  col
+  if (return_col) {
+    list(col = col, cols = cols)
+  } else {
+    col
+  }
+  
 }
 
 calc_distance <- function(

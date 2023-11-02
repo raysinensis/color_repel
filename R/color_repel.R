@@ -26,23 +26,26 @@ color_repel <- function(g,
   if (verbose) {
     message("extract original colors...")
   }
+  temp <- check_colour_mapping(g, col = col, return_col = TRUE, autoswitch = autoswitch)
+  col <- temp[["col"]]
+  cols <- temp[["cols"]]
   g2 <- ggplot2::ggplot_build(g)
-  cols <- arrange(g2$data[[1]], group)
-  cols <- unique(pull(cols, col))
-  if (verbose) {
-    message(cols)
-  }
-  if (autoswitch) {
-    if (length(cols) <= 1) {
-      if (col == "fill") {
-        col <- "colour"
-      } else {
-        col <- "fill"
-      }
-      cols <- arrange(g2$data[[1]], group)
-      cols <- unique(pull(cols, col))
-    }
-  }
+  # cols <- arrange(g2$data[[1]], group)
+  # cols <- unique(pull(cols, col))
+  # if (verbose) {
+  #   message(cols)
+  # }
+  # if (autoswitch) {
+  #   if (length(cols) <= 1) {
+  #     if (col == "fill") {
+  #       col <- "colour"
+  #     } else {
+  #       col <- "fill"
+  #     }
+  #     cols <- arrange(g2$data[[1]], group)
+  #     cols <- unique(pull(cols, col))
+  #   }
+  # }
   if (length(cols) <= 1) {
     warning("Did not detect multiple colors, did you specify the correct mapping? Trying to autoswitch...")
   }
