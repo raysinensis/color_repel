@@ -159,8 +159,8 @@ matrix2_score_n <- function(dist1,
   if (verbose) {
     scale1 <- 10 ^ floor(log10(score0))
     # message("scale: ", scale1)
-    message(ord1)
-    message("original score: ", score0 / scale1)
+    # message(ord1)
+    message("original score (scaled): ", score0 / scale1)
     message("worst score: ", scoremax / scale1)
     message("optimal score: ", score1 / scale1)
   }
