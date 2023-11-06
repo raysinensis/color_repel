@@ -9,6 +9,8 @@
 #' @param seed sampling randomization seed
 #' @param autoswitch try to switch between colour and fill automatically
 #' @param out_worst output the worst combination instead of best
+#' @param repel_label whether to add centroid labels with ggrepel
+#' @param ... passed to repel_label
 #' @return new ggplot object
 #' @export
 gg_color_repel <- function(g = ggplot2::last_plot(),
@@ -20,7 +22,9 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            nsamp = 50000,
                            seed = 34,
                            autoswitch = TRUE,
-                           out_worst = FALSE) {
+                           out_worst = FALSE,
+                           repel_label = FALSE, 
+                           ...) {
   newcols <- color_repel(g,
     col = col, verbose = verbose,
     downsample = downsample, nsamp = nsamp, seed = seed,
@@ -37,8 +41,14 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   labs <- get_labs(g)
 
   if (all(is.na(labs))) {
-    suppressMessages(g + do.call(.f, c(values = list(newcols))))
+    g <- suppressMessages(g + do.call(.f, c(values = list(newcols))))
   } else {
-    suppressMessages(g + do.call(.f, c(values = list(newcols), labels = list(labs))))
+    g <- suppressMessages(g + do.call(.f, c(values = list(newcols), labels = list(labs))))
   }
+  
+  if (repel_label) {
+    g <- label_repel(g, ...)
+  }
+  
+  g
 }

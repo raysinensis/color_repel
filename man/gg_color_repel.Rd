@@ -14,7 +14,9 @@ gg_color_repel(
   nsamp = 50000,
   seed = 34,
   autoswitch = TRUE,
-  out_worst = FALSE
+  out_worst = FALSE,
+  repel_label = FALSE,
+  ...
 )
 }
 \arguments{
@@ -37,6 +39,10 @@ gg_color_repel(
 \item{autoswitch}{try to switch between colour and fill automatically}
 
 \item{out_worst}{output the worst combination instead of best}
+
+\item{repel_label}{whether to add centroid labels with ggrepel}
+
+\item{...}{passed to repel_label}
 }
 \value{
 new ggplot object

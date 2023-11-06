@@ -514,3 +514,80 @@ average_clusters <- function(mat,
 
   return(out)
 }
+
+#' ggrepel labeling of clusters
+#' @param g ggplot object or data.frame
+#' @param group_col column name in data.frame, default to "group" in ggplot data
+#' @param x column name in data.frame for x
+#' @param y column name in data.frame for y
+#' @param txt_pt text size
+#' @param remove_current whether to remove current text
+#' @param layer text layer to remove, defaults to last
+#' @return function, if data.frame input, or new ggplot object
+#' @examples
+#' g <- label_repel(ggplot(mtcars, aes(x = hp, y = wt, color = as.character(cyl))) + geom_point(), remove_current = F)
+#' @export
+label_repel <- function(g, group_col = "group", x = "x", y = "y", 
+                        txt_pt = 3, remove_current = TRUE, layer = "auto") {
+  if (is.data.frame(g)) {
+    so_df <- g
+  } else {
+    g2 <- ggplot2::ggplot_build(g)
+    so_df <- g2$data[[1]]
+  }
+  centers <- so_df %>%
+    group_by(!!sym(group_col)) %>%
+    summarize(
+      t1 = median(!!dplyr::sym(x)),
+      t2 = median(!!dplyr::sym(y)),
+      a = 1
+    ) %>%
+    ungroup()
+  
+  labdata <- so_df %>%
+    dplyr::select(
+      !!dplyr::sym(group_col),
+      !!dplyr::sym(x),
+      !!dplyr::sym(y)
+    )
+  labdata[[1]] <- ""
+  labdata$a <- 0
+  colnames(labdata) <- colnames(centers)
+  alldata <- rbind(labdata, centers)
+  
+  d <- ggrepel::geom_text_repel(
+    data = alldata,
+    color = "black",
+    size = txt_pt,
+    mapping = aes(
+      x = !!dplyr::sym("t1"),
+      y = !!dplyr::sym("t2"),
+      # alpha = !!dplyr::sym("a"),
+      label = .data[[group_col]]
+    ),
+    point.padding = 0.5,
+    box.padding = 0.5,
+    max.iter = 50000,
+    max.overlaps = 10000
+  )
+  
+  if (is.data.frame(g)) {
+    d
+  } else {
+    if (remove_current) {
+      g <- remove_current_labels(g, layer = layer)
+    }
+    g + d
+  }
+}
+
+remove_current_labels <- function(g, layer = "auto") {
+  if ("patchwork" %in% class(g)) {
+    g <- g[[1]]
+  }
+  if (layer == "auto") {
+    layer = length(g[["layers"]])
+  }
+  g[["layers"]][[layer]] <- NULL
+  g
+}
