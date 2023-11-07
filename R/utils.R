@@ -562,6 +562,7 @@ label_repel <- function(g, group_col = "group", x = "x", y = "y",
     mapping = aes(
       x = !!dplyr::sym("t1"),
       y = !!dplyr::sym("t2"),
+      # fill = NA,
       # alpha = !!dplyr::sym("a"),
       label = .data[[group_col]]
     ),

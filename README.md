@@ -22,8 +22,6 @@ library(colorrepel)
 
 ### Examples
 
-Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
-
 ```
 a <- Seurat::DimPlot(so, group.by = "type", pt.size = 0.5)
 b <- a + scale_color_manual(values = color_repel(a, sim = colorspace::tritan))
@@ -44,11 +42,8 @@ cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow 
 
 <img align="center" width="900" height="200" src="vignettes/stackbar_example.png">
 
-```
-a <- readRDS("spatialdim_gg.rds")
-b <- gg_color_repel(a, sim = colorspace::deutan) # autodetects scale "colour" vs "fill"
-cowplot::plot_grid(a, b, 
-                   labels = c("original", "color_repel"))
-```
+---------------
 
-<img align="center" width="800" height="400" src="vignettes/spatialdim_example.png">
+Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
+
+<img width="400" height="325" src="vignettes/adr1.png"> --> <img width="400" height="325" src="vignettes/adr2.png">
