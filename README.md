@@ -46,4 +46,4 @@ cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow 
 
 Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
 
-<img width="400" height="325" src="vignettes/adr1.png"> --> <img width="400" height="325" src="vignettes/adr2.png">
+<img width="300" height="245" src="vignettes/adr1.png"> --> <img width="300" height="245" src="vignettes/adr2.png">
