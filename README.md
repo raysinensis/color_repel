@@ -42,6 +42,13 @@ cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow 
 
 <img align="center" width="900" height="200" src="vignettes/stackbar_example.png">
 
+```
+a <- readRDS("bar_gg.rds")
+gg_color_repel(a, encircle = T)
+```
+
+<img align="center" width="350" height="300" src="vignettes/scRNAseqUMAP_encircle.png">
+
 ---------------
 
 Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
