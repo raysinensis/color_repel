@@ -28,17 +28,17 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            seed = 34,
                            autoswitch = TRUE,
                            out_worst = FALSE,
-                           repel_label = FALSE, 
+                           repel_label = FALSE,
                            encircle = FALSE,
                            encircle_alpha = 0.25,
-                           encircle_expand = 0.02, 
+                           encircle_expand = 0.02,
                            encircle_shape = 0.5,
                            encircle_threshold = 0.1,
                            encircle_nmin = 0.1,
                            ...) {
   newcols <- color_repel(g,
     col = col, verbose = verbose,
-    downsample = downsample, 
+    downsample = downsample,
     nsamp = nsamp, seed = seed,
     sim = sim, severity = severity,
     autoswitch = autoswitch,
@@ -57,21 +57,23 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   } else {
     g <- suppressMessages(g + do.call(.f, c(values = list(newcols), labels = list(labs))))
   }
-  
+
   if (repel_label) {
     g <- label_repel(g, ...)
   }
-  
+
   if (encircle) {
     dat <- prep_encircle(g, threshold = encircle_threshold, nmin = encircle_nmin, downsample = downsample, seed = seed)
-    g <- g + ggalt::geom_encircle(data = dat, 
-                                  aes(x = x, y = y, fill = group),
-                                  expand = encircle_expand, 
-                                  s_shape = encircle_shape, 
-                                  alpha = encircle_alpha, 
-                                  show.legend = F)
+    g <- g + ggalt::geom_encircle(
+      data = dat,
+      ggplot2::aes(x = x, y = y, fill = group),
+      expand = encircle_expand,
+      s_shape = encircle_shape,
+      alpha = encircle_alpha,
+      show.legend = F
+    )
     g <- suppressMessages(g + do.call("scale_fill_manual", c(values = list(newcols))))
   }
-  
+
   g
 }

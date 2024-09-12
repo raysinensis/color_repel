@@ -182,7 +182,7 @@ matrix_lookup <- function(mat1, mat2, s) {
   ml <- create_matrix_lookup(mat1, mat2)
   scores <- c()
   for (i in 1:length(s)) {
-    l <- str_c(1:length(s[[i]]), "-", s[[i]])
+    l <- stringr::str_c(1:length(s[[i]]), "-", s[[i]])
     temp <- data.frame(ml[l])
     temp[temp == Inf] <- NA
     scores[i] <- mean(rowSums(temp, na.rm = T), na.rm = T)

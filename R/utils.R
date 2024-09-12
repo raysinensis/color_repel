@@ -36,7 +36,6 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
 #' @param low_threshold option to remove clusters with too few cells
 #' @param method whether to take mean (default), median, 10% truncated mean, or trimean, max, min
 #' @param output_log whether to report log results
-#' @param subclusterpower whether to get multiple averages per original cluster
 #' @param cut_n set on a limit of genes as expressed, lower ranked genes
 #' are set to 0, considered unexpressed
 #' @param trim whether to remove 1 percentile when doing min caluculation
@@ -88,9 +87,6 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
     stop("metadata not formatted correctly,\n         supply either a vector or a dataframe",
       call. = FALSE
     )
-  }
-  if (subclusterpower > 0) {
-    cluster_ids <- overcluster(mat, cluster_ids, power = subclusterpower)
   }
   if (method == "mean") {
     out <- lapply(cluster_ids, function(cell_ids) {
@@ -343,11 +339,6 @@ average_clusters <- function(mat,
     )
   }
 
-  if (subclusterpower > 0) {
-    cluster_ids <-
-      overcluster(mat, cluster_ids, power = subclusterpower)
-  }
-
   if (method == "mean") {
     out <- lapply(
       cluster_ids,
@@ -525,9 +516,10 @@ average_clusters <- function(mat,
 #' @param layer text layer to remove, defaults to last
 #' @return function, if data.frame input, or new ggplot object
 #' @examples
-#' g <- label_repel(ggplot(mtcars, aes(x = hp, y = wt, color = as.character(cyl))) + geom_point(), remove_current = F)
+#' g <- label_repel(ggplot2::ggplot(mtcars, aes(x = hp, y = wt, color = as.character(cyl))) +
+#'   geom_point(), remove_current = F)
 #' @export
-label_repel <- function(g, group_col = "group", x = "x", y = "y", 
+label_repel <- function(g, group_col = "group", x = "x", y = "y",
                         txt_pt = 3, remove_current = TRUE, layer = "auto") {
   if (is.data.frame(g)) {
     so_df <- g
@@ -535,31 +527,30 @@ label_repel <- function(g, group_col = "group", x = "x", y = "y",
     g2 <- ggplot2::ggplot_build(g)
     so_df <- g2$data[[1]]
   }
-  centers <- so_df %>%
-    group_by(!!sym(group_col)) %>%
-    summarize(
-      t1 = median(!!dplyr::sym(x)),
-      t2 = median(!!dplyr::sym(y)),
-      a = 1
-    ) %>%
-    ungroup()
-  
-  labdata <- so_df %>%
-    dplyr::select(
-      !!dplyr::sym(group_col),
-      !!dplyr::sym(x),
-      !!dplyr::sym(y)
-    )
+  centers <- dplyr::group_by(so_df, !!dplyr::sym(group_col))
+  centers <- dplyr::summarize(centers,
+    t1 = stats::median(!!dplyr::sym(x)),
+    t2 = stats::median(!!dplyr::sym(y)),
+    a = 1
+  )
+  centers <- dplyr::ungroup(centers)
+
+  labdata <- dplyr::select(
+    so_df,
+    !!dplyr::sym(group_col),
+    !!dplyr::sym(x),
+    !!dplyr::sym(y)
+  )
   labdata[[1]] <- ""
   labdata$a <- 0
   colnames(labdata) <- colnames(centers)
   alldata <- rbind(labdata, centers)
-  
+
   d <- ggrepel::geom_text_repel(
     data = alldata,
     color = "black",
     size = txt_pt,
-    mapping = aes(
+    mapping = ggplot2::aes(
       x = !!dplyr::sym("t1"),
       y = !!dplyr::sym("t2"),
       # fill = NA,
@@ -571,7 +562,7 @@ label_repel <- function(g, group_col = "group", x = "x", y = "y",
     max.iter = 50000,
     max.overlaps = 10000
   )
-  
+
   if (is.data.frame(g)) {
     d
   } else {
@@ -587,7 +578,7 @@ remove_current_labels <- function(g, layer = "auto") {
     g <- g[[1]]
   }
   if (layer == "auto") {
-    layer = length(g[["layers"]])
+    layer <- length(g[["layers"]])
   }
   g[["layers"]][[layer]] <- NULL
   g
@@ -598,8 +589,8 @@ prep_encircle <- function(g, threshold = 0.1, nmin = 0.1, downsample = 5000, see
     g <- g[[1]]
   }
   g <- ggplot2::ggplot_build(g)
-  
-  em <- dplyr::select(g$data[[1]], c(x,y))
+
+  em <- dplyr::select(g$data[[1]], c(x, y))
   clust <- g$data[[1]]$group
   if (nrow(em) > downsample) {
     frac <- downsample / nrow(em)
@@ -608,19 +599,19 @@ prep_encircle <- function(g, threshold = 0.1, nmin = 0.1, downsample = 5000, see
     clust <- res[[2]]
   }
   ems <- split(em, clust)
-  dat <- map(1:length(ems), function(x) {
+  dat <- purrr::map(1:length(ems), function(x) {
     em1 <- ems[[x]]
     distm1 <- distances::distances(em1)
     distm1 <- as.matrix(distm1)
-    cut1 <- quantile(unlist(distm1), probs = threshold)
+    cut1 <- stats::quantile(unlist(distm1), probs = threshold)
     n1 <- colSums(distm1 <= cut1)
     sel1 <- n1 >= nrow(em1) * nmin
-    dat1 <- em1[sel1,] 
+    dat1 <- em1[sel1, ]
     if (nrow(dat1) <= 3) {
-      message("too few points remain in group ",names(ems)[x])
+      message("too few points remain in group ", names(ems)[x])
     }
     dat1$group <- names(ems)[x]
     dat1
   })
-  dat %>% bind_rows()
+  dplyr::bind_rows(dat)
 }
