@@ -15,6 +15,7 @@
 #' @param encircle_expand expand argument passed to geom_encircle
 #' @param encircle_shape shape/smoothing argument passed to geom_encircle
 #' @param encircle_threshold threshold for removing outliers
+#' @param encircle_nmin number of near neighbors for removing outliers
 #' @param ... passed to repel_label
 #' @return new ggplot object
 #' @export

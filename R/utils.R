@@ -5,7 +5,8 @@
 #' @param seed sampling randomization seed
 #' @return list with new downsampled matrix/data.frame and id vector
 #' @examples
-#' res <- by_cluster_sampling(data.frame(y = c(1, 2, 3, 4, 5, 6)), vec = c(1, 2, 1, 2, 1, 2), frac = 0.5)
+#' res <- by_cluster_sampling(data.frame(y = c(1, 2, 3, 4, 5, 6)), 
+#' vec = c(1, 2, 1, 2, 1, 2), frac = 0.5)
 #' @export
 by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   dfs <- split(df, vec)
@@ -24,7 +25,8 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   list(dfout, vecout)
 }
 
-#' Rowwise math from matrix/data.frame per cluster based on another vector/metadata, similar to clustifyr::average_clusters but ids as rows
+#' Rowwise math from matrix/data.frame per cluster based on another vector/metadata, 
+#' similar to clustifyr::average_clusters but ids as rows
 #' @param mat expression matrix
 #' @param metadata data.frame or vector containing cluster assignments per cell.
 #' Order must match column order in supplied matrix. If a data.frame
@@ -34,7 +36,8 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
 #' @param cluster_col column in metadata with cluster number
 #' @param cell_col if provided, will reorder matrix first
 #' @param low_threshold option to remove clusters with too few cells
-#' @param method whether to take mean (default), median, 10% truncated mean, or trimean, max, min
+#' @param method whether to take mean (default), median, 10% truncated mean, or trimean, 
+#' max, min
 #' @param output_log whether to report log results
 #' @param cut_n set on a limit of genes as expressed, lower ranked genes
 #' are set to 0, considered unexpressed
@@ -42,12 +45,13 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
 #' @return average expression matrix, with genes for row names, and clusters
 #'  for column names
 #' @examples
-#' mat <- average_clusters_rowwise(data.frame(y = c(1, 2, 3, 4, 5, 6), x = c(1, 2, 3, 4, 5, 6)), metadata = c(1, 2, 1, 2, 1, 2), method = "min")
+#' mat <- average_clusters_rowwise(data.frame(y = c(1, 2, 3, 4, 5, 6), 
+#' x = c(1, 2, 3, 4, 5, 6)), metadata = c(1, 2, 1, 2, 1, 2), method = "min")
 #' @importFrom matrixStats rowMaxs rowMedians colRanks
 #' @export
 average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_log = FALSE,
                                      cell_col = NULL, low_threshold = 0, method = "mean", output_log = FALSE,
-                                     subclusterpower = 0, cut_n = NULL, trim = FALSE) {
+                                     cut_n = NULL, trim = FALSE) {
   cluster_info <- metadata
   if (!(is.null(cell_col))) {
     if (!(all(rownames(mat) == cluster_info[[cell_col]]))) {
@@ -289,7 +293,6 @@ average_clusters <- function(mat,
                              low_threshold = 0,
                              method = "mean",
                              output_log = TRUE,
-                             subclusterpower = 0,
                              cut_n = NULL) {
   cluster_info <- metadata
   if (!(is.null(cell_col))) {
@@ -516,8 +519,8 @@ average_clusters <- function(mat,
 #' @param layer text layer to remove, defaults to last
 #' @return function, if data.frame input, or new ggplot object
 #' @examples
-#' g <- label_repel(ggplot2::ggplot(mtcars, aes(x = hp, y = wt, color = as.character(cyl))) +
-#'   geom_point(), remove_current = F)
+#' g <- label_repel(ggplot2::ggplot(mtcars, ggplot2::aes(x = hp, y = wt, color = as.character(cyl))) +
+#'   ggplot2::geom_point(), remove_current = FALSE)
 #' @export
 label_repel <- function(g, group_col = "group", x = "x", y = "y",
                         txt_pt = 3, remove_current = TRUE, layer = "auto") {

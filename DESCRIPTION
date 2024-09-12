@@ -5,8 +5,9 @@ Authors@R:
     person(given = "Rui",
            family = "Fu",
            role = c("cre", "aut"),
-           email = "raysinensis@gmail.com")
-Description: Repel visually similar colors away for colorblind users in various plots.
+           email = "raysinensis@gmail.com",
+           comment = c(ORCID = "0000-0001-8183-4549"))
+Description: Iterate and repel visually similar colors away in various ggplot plots, to be more friendly toward colorblind users.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

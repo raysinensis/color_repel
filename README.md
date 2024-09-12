@@ -29,7 +29,7 @@ cowplot::plot_grid(a, b,
                    labels = c("original", "color_repel"))
 ```
 
-<img align="center" width="700" height="300" src="vignettes/scRNAseqUMAP_example.png">
+<img align="center" width="700" height="300" src="inst/scRNAseqUMAP_example.png">
 
 ```
 a <- readRDS("bar_gg.rds")
@@ -40,17 +40,17 @@ c <- gg_color_repel(b, col = "fill")
 cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow = 1)
 ```
 
-<img align="center" width="900" height="200" src="vignettes/stackbar_example.png">
+<img align="center" width="900" height="200" src="inst/stackbar_example.png">
 
 ```
 a <- readRDS("bar_gg.rds")
 gg_color_repel(a, encircle = T)
 ```
 
-<img align="center" width="350" height="300" src="vignettes/scRNAseqUMAP_encircle.png">
+<img align="center" width="350" height="300" src="inst/scRNAseqUMAP_encircle.png">
 
 ---------------
 
 Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
 
-<img width="350" height="285" src="vignettes/adr1.png">  -->  <img width="350" height="285" src="vignettes/adr2.png">
+<img width="350" height="285" src="inst/adr1.png">  -->  <img width="350" height="285" src="inst/adr2.png">

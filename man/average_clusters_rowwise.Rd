@@ -2,7 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{average_clusters_rowwise}
 \alias{average_clusters_rowwise}
-\title{Rowwise math from matrix/data.frame per cluster based on another vector/metadata, similar to clustifyr::average_clusters but ids as rows}
+\title{Rowwise math from matrix/data.frame per cluster based on another vector/metadata,
+similar to clustifyr::average_clusters but ids as rows}
 \usage{
 average_clusters_rowwise(
   mat,
@@ -13,7 +14,6 @@ average_clusters_rowwise(
   low_threshold = 0,
   method = "mean",
   output_log = FALSE,
-  subclusterpower = 0,
   cut_n = NULL,
   trim = FALSE
 )
@@ -34,7 +34,8 @@ averaging will be done on unlogged data}
 
 \item{low_threshold}{option to remove clusters with too few cells}
 
-\item{method}{whether to take mean (default), median, 10\% truncated mean, or trimean, max, min}
+\item{method}{whether to take mean (default), median, 10\% truncated mean, or trimean,
+max, min}
 
 \item{output_log}{whether to report log results}
 
@@ -48,8 +49,10 @@ average expression matrix, with genes for row names, and clusters
 for column names
 }
 \description{
-Rowwise math from matrix/data.frame per cluster based on another vector/metadata, similar to clustifyr::average_clusters but ids as rows
+Rowwise math from matrix/data.frame per cluster based on another vector/metadata,
+similar to clustifyr::average_clusters but ids as rows
 }
 \examples{
-mat <- average_clusters_rowwise(data.frame(y = c(1, 2, 3, 4, 5, 6), x = c(1, 2, 3, 4, 5, 6)), metadata = c(1, 2, 1, 2, 1, 2), method = "min")
+mat <- average_clusters_rowwise(data.frame(y = c(1, 2, 3, 4, 5, 6), 
+x = c(1, 2, 3, 4, 5, 6)), metadata = c(1, 2, 1, 2, 1, 2), method = "min")
 }

@@ -58,6 +58,8 @@ gg_color_repel(
 
 \item{encircle_threshold}{threshold for removing outliers}
 
+\item{encircle_nmin}{number of near neighbors for removing outliers}
+
 \item{...}{passed to repel_label}
 }
 \value{

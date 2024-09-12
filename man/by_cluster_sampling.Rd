@@ -22,5 +22,6 @@ list with new downsampled matrix/data.frame and id vector
 Balanced downsampling of matrix/data.frame based on cluster assignment vector
 }
 \examples{
-res <- by_cluster_sampling(data.frame(y = c(1, 2, 3, 4, 5, 6)), vec = c(1, 2, 1, 2, 1, 2), frac = 0.5)
+res <- by_cluster_sampling(data.frame(y = c(1, 2, 3, 4, 5, 6)), 
+vec = c(1, 2, 1, 2, 1, 2), frac = 0.5)
 }
