@@ -107,13 +107,6 @@ color_repel <- function(g,
   orig_cols[res]
 }
 
-# matrix2_score <- function(dist1, dist2) {
-#   temp <- dist1 * dist2
-#   # temp[temp == Inf] <- NA
-#   # temp <- colSums(temp, na.rm = T)
-#   sum(temp, na.rm = T)/(ncol(temp)^2-sum(is.na(temp)))
-# }
-
 matrix2_score <- function(dist1, dist2) {
   temp <- dist1 * dist2
   max(temp, na.rm = T)
