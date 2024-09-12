@@ -38,8 +38,6 @@ averaging will be done on unlogged data}
 
 \item{output_log}{whether to report log results}
 
-\item{subclusterpower}{whether to get multiple averages per original cluster}
-
 \item{cut_n}{set on a limit of genes as expressed, lower ranked genes
 are set to 0, considered unexpressed}
 

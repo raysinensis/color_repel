@@ -36,5 +36,6 @@ function, if data.frame input, or new ggplot object
 ggrepel labeling of clusters
 }
 \examples{
-g <- label_repel(ggplot(mtcars, aes(x = hp, y = wt, color = as.character(cyl))) + geom_point(), remove_current = F)
+g <- label_repel(ggplot2::ggplot(mtcars, aes(x = hp, y = wt, color = as.character(cyl))) +
+  geom_point(), remove_current = F)
 }

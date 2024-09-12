@@ -16,6 +16,12 @@ gg_color_repel(
   autoswitch = TRUE,
   out_worst = FALSE,
   repel_label = FALSE,
+  encircle = FALSE,
+  encircle_alpha = 0.25,
+  encircle_expand = 0.02,
+  encircle_shape = 0.5,
+  encircle_threshold = 0.1,
+  encircle_nmin = 0.1,
   ...
 )
 }
@@ -41,6 +47,16 @@ gg_color_repel(
 \item{out_worst}{output the worst combination instead of best}
 
 \item{repel_label}{whether to add centroid labels with ggrepel}
+
+\item{encircle}{whether to draw geom_encircle by cluster}
+
+\item{encircle_alpha}{alpha argument passed to geom_encircle}
+
+\item{encircle_expand}{expand argument passed to geom_encircle}
+
+\item{encircle_shape}{shape/smoothing argument passed to geom_encircle}
+
+\item{encircle_threshold}{threshold for removing outliers}
 
 \item{...}{passed to repel_label}
 }
