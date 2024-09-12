@@ -2,7 +2,7 @@
 
 ### Repel visually similar colors away for colorblind users
 
-For work (single cell RNA-seq) I make and look at countless plots. Though most packages attempt to be colorblind-aware/friendly, I often find results uninterpretable when over a handful of colors are used. Some helpful strategies include: scatterHatch, adding different hatch patterns to clusters on top of colors; ggtrace; plotly interactivity; etc. But perhaps a simpler solution can be used -- avoid using visually similar colors next to each other (ie. on a UMAP, neighboring clusters should never be light yellow and slightly darker yellow).
+For work (single cell RNA-seq) I make and look at countless plots. Though most packages attempt to be colorblind-aware/friendly, I often find results uninterpretable when over a handful of colors are used. Some helpful strategies include: scatterHatch, adding different hatch patterns to clusters on top of colors; ggtrace; plotly interactivity; etc. But perhaps a simpler solution can be used -- avoid using visually similar colors next to each other (ie. on a UMAP, neighboring clusters should never be light yellow and slightly darker yellow). In 1D plots (barplot, violin plots, etc), we'd simply pass a vector of dissimilar colors. Not so easy to do when 2D and many colors are involved. Hence this simple package.
 
 ### How this works
 
@@ -10,7 +10,7 @@ For work (single cell RNA-seq) I make and look at countless plots. Though most p
 1. generate distance matrix of categories (clusters on 2D plot, group on other types of plots)
 2. generate distance matrix of colors, after conversion to CIELab space (and possibly various colorblindness conversion functions)
 3. find optimal assignments of color to above groups/clusters to avoid plotting visually similar colors near each other
-4. recolor
+4. recolor (with option to add repelled text label for each group as well)
 
 ### Installation
 
@@ -46,4 +46,4 @@ cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow 
 
 Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
 
-<img width="400" height="325" src="vignettes/adr1.png"> --> <img width="400" height="325" src="vignettes/adr2.png">
+<img width="350" height="285" src="vignettes/adr1.png">  -->  <img width="350" height="285" src="vignettes/adr2.png">
