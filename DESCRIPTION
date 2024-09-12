@@ -1,5 +1,5 @@
 Package: colorrepel
-Title: Repel Visually Similar Colors For Colorblind Users In Various Plots
+Title: Repel Visually Similar Colors for Colorblind Users in Various Plots
 Version: 0.1.0
 Authors@R: 
     person(given = "Rui",
