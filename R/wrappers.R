@@ -10,6 +10,11 @@
 #' @param autoswitch try to switch between colour and fill automatically
 #' @param out_worst output the worst combination instead of best
 #' @param repel_label whether to add centroid labels with ggrepel
+#' @param encircle whether to draw geom_encircle by cluster
+#' @param encircle_alpha alpha argument passed to geom_encircle
+#' @param encircle_expand expand argument passed to geom_encircle
+#' @param encircle_shape shape/smoothing argument passed to geom_encircle
+#' @param encircle_threshold threshold for removing outliers
 #' @param ... passed to repel_label
 #' @return new ggplot object
 #' @export
@@ -24,6 +29,11 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            autoswitch = TRUE,
                            out_worst = FALSE,
                            repel_label = FALSE, 
+                           encircle = FALSE,
+                           encircle_alpha = 0.5,
+                           encircle_expand = 0.02, 
+                           encircle_shape = 0.5,
+                           encircle_threshold = 0.1,
                            ...) {
   newcols <- color_repel(g,
     col = col, verbose = verbose,
@@ -48,6 +58,14 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   
   if (repel_label) {
     g <- label_repel(g, ...)
+  }
+  
+  if (encircle) {
+    dat <<- prep_encircle(g, threshold = encircle_threshold)
+    g <- g + ggalt::geom_encircle(data = dat, 
+                                  aes(x = x, y = y, fill = group),
+                                  expand = encircle_expand, s_shape = encircle_shape, alpha = encircle_alpha, show.legend = F)
+    g <- suppressMessages(g + do.call("scale_fill_manual", c(values = list(newcols))))
   }
   
   g

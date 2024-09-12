@@ -592,3 +592,24 @@ remove_current_labels <- function(g, layer = "auto") {
   g[["layers"]][[layer]] <- NULL
   g
 }
+
+prep_encircle <- function(g, threshold = 0.1, nmin = 0.03) {
+  if ("patchwork" %in% class(g)) {
+    g <- g[[1]]
+  }
+  g <- ggplot2::ggplot_build(g)
+  em <- dplyr::select(g$data[[1]], c(x,y))
+  ems <- split(em, g$data[[1]]$group)
+  dat <- map(1:length(ems), function(x) {
+    em1 <- ems[[x]]
+    distm1 <- distances::distances(em1)
+    distm1 <- as.matrix(distm1)
+    cut1 <- quantile(unlist(distm1), probs = threshold)
+    n1 <- colSums(distm1 <= cut1)
+    sel1 <- n1 >= nrow(em1) * nmin
+    dat1 <- em1[sel1,] 
+    dat1$group <- names(ems)[x]
+    dat1
+  })
+  dat %>% bind_rows()
+}
