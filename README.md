@@ -11,6 +11,7 @@ For work (single cell RNA-seq) I make and look at countless plots. Though most p
 2. generate distance matrix of colors, after conversion to CIELab space (and possibly various colorblindness conversion functions)
 3. find optimal assignments of color to above groups/clusters to avoid plotting visually similar colors near each other
 4. recolor (with option to add repelled text label for each group as well)
+5. add encircle geom if desired
 
 ### Installation
 
@@ -43,7 +44,7 @@ cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow 
 <img align="center" width="900" height="200" src="inst/stackbar_example.png">
 
 ```
-a <- readRDS("bar_gg.rds")
+a <- Seurat::DimPlot(so, group.by = "type", pt.size = 0.5)
 gg_color_repel(a, encircle = T)
 ```
 
