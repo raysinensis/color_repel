@@ -1,3 +1,74 @@
+#' Score matrix distances
+#' @param dist1 distanct matrix 1
+#' @param dist2 distanct matrix 2
+#' @return numeric score
+matrix2_score <- function(dist1, dist2) {
+  temp <- dist1 * dist2
+  max(temp, na.rm = T)
+}
+
+#' Score matrix distances in multiple combinations
+#' @param dist1 distanct matrix 1
+#' @param dist2 distanct matrix 2
+#' @param n number of iterations
+#' @param verbose whether to output more messages
+#' @param seed random seed
+#' @param out_worst instead of default output of best combination, output worst instead
+#' @return reordered vector
+matrix2_score_n <- function(dist1,
+                            dist2,
+                            n = min(factorial(ncol(dist2)) * 10, 20000),
+                            verbose = F,
+                            seed = 34,
+                            out_worst = FALSE) {
+  dist1[dist1 == Inf] <- NA
+  dist2[dist2 == Inf] <- NA
+  len <- ncol(dist2)
+  
+  s <- vector("list", n)
+  dqrng::dqset.seed(seed)
+  for (i in 1:n) {
+    s[[i]] <- dqrng::dqsample.int(len, len)
+  }
+  s <- unique(s)
+  if (verbose) {
+    message("attempting ", length(s), " calcuations...")
+    if (length(s) == min(factorial(len))) {
+      message("all color combos covered")
+    }
+  }
+  
+  ord1 <- 1:ncol(dist2)
+  score1 <- matrix2_score(dist1, dist2)
+  score0 <- score1
+  scoremax <- score1
+  
+  for (i in 1:length(s)) {
+    ord_temp <- s[[i]]
+    dist3 <- dist2[ord_temp, ord_temp]
+    score_temp <- matrix2_score(dist1, dist3)
+    if (score_temp > scoremax) {
+      scoremax <- score_temp
+      if (out_worst) {
+        ord1 <- ord_temp
+      }
+    }
+    if (score_temp < score1) {
+      if (!out_worst) {
+        ord1 <- ord_temp
+      }
+      score1 <- score_temp
+    }
+  }
+  if (verbose) {
+    scale1 <- 10^floor(log10(score0))
+    message("original score (scaled): ", score0 / scale1)
+    message("worst score: ", scoremax / scale1)
+    message("optimal score: ", score1 / scale1)
+  }
+  ord1
+}
+
 #' Balanced downsampling of matrix/data.frame based on cluster assignment vector
 #' @param df expression matrix or data.frame
 #' @param vec vector of ids
@@ -47,7 +118,6 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
 #' @examples
 #' mat <- average_clusters_rowwise(data.frame(y = c(1, 2, 3, 4, 5, 6), 
 #' x = c(1, 2, 3, 4, 5, 6)), metadata = c(1, 2, 1, 2, 1, 2), method = "min")
-#' @importFrom matrixStats rowMaxs rowMedians colRanks
 #' @export
 average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_log = FALSE,
                                      cell_col = NULL, low_threshold = 0, method = "mean", output_log = FALSE,
@@ -58,9 +128,7 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
       mat <- mat[cluster_info[[cell_col]], ]
     }
   }
-  # if (is.null(rownames(mat))) {
-  #   stop("The input matrix does not have rownames.\n", "Check colnames() of input object")
-  # }
+
   if (is.vector(cluster_info)) {
     if (nrow(mat) != length(cluster_info)) {
       stop("vector of cluster assignments does not match the number of rows in the matrix",
@@ -229,6 +297,11 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
 #' Extract custom labels from ggplot object
 #' @param g ggplot object
 #' @return named vector of labels
+#' @examples 
+#' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) + 
+#' ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl))) +
+#' ggplot2::geom_text(ggplot2::aes(label = model))
+#' get_labs(a)
 #' @export
 get_labs <- function(g) {
   g2 <- ggplot2::ggplot_build(g)
@@ -258,6 +331,14 @@ check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswit
   }
 }
 
+#' Distance calculations for spatial coord
+#' @param coord dataframe or matrix of spatial coordinates, cell barcode as rownames
+#' @param metadata data.frame or vector containing cluster assignments per cell.
+#' Order must match column order in supplied matrix. If a data.frame
+#' provide the cluster_col parameters.
+#' @param cluster_col column in metadata with cluster number
+#' @param collapse_to_cluster instead of reporting min distance to cluster per cell, summarize to cluster level
+#' @return min distance matrix
 calc_distance <- function(
     coord,
     metadata,
@@ -285,6 +366,22 @@ calc_distance <- function(
   }
 }
 
+#' Average expression values per cluster
+#'
+#' @param mat expression matrix
+#' @param metadata data.frame or vector containing cluster assignments per cell.
+#' Order must match column order in supplied matrix. If a data.frame
+#' provide the cluster_col parameters.
+#' @param if_log input data is natural log,
+#' averaging will be done on unlogged data
+#' @param cluster_col column in metadata with cluster number
+#' @param cell_col if provided, will reorder matrix first
+#' @param low_threshold option to remove clusters with too few cells
+#' @param method whether to take mean (default), median, 10% truncated mean, or trimean, max, min
+#' @param output_log whether to report log results
+#' @param cut_n set on a limit of genes as expressed, lower ranked genes
+#' are set to 0, considered unexpressed
+#' @return average or other desired calculation by group/cluster matrix
 average_clusters <- function(mat,
                              metadata,
                              cluster_col = "cluster",
@@ -301,10 +398,6 @@ average_clusters <- function(mat,
     }
   }
 
-  # if(is.null(colnames(mat))){
-  #   stop("The input matrix does not have colnames.\n",
-  #        "Check colnames() of input object")
-  # }
   if (is.vector(cluster_info)) {
     if (ncol(mat) != length(cluster_info)) {
       stop("vector of cluster assignments does not match the number of columns in the matrix",
@@ -431,13 +524,7 @@ average_clusters <- function(mat,
     out <- purrr::map(
       cluster_ids,
       function(cell_ids) {
-        # if (!all(cell_ids %in% colnames(mat))) {
-        #   stop("cell ids not found in input matrix",
-        #        call. = FALSE
-        #   )
-        # }
         mat_data <- mat[, cell_ids, drop = FALSE]
-        # mat_data[mat_data == 0] <- NA
         res <- matrixStats::rowMins(mat_data,
           na.rm = TRUE
         )

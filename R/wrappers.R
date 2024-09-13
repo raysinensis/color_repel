@@ -17,6 +17,10 @@
 #' @param encircle_threshold threshold for removing outliers
 #' @param encircle_nmin number of near neighbors for removing outliers
 #' @param ... passed to repel_label
+#' @examples 
+#' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
+#' ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
+#' b <- gg_color_repel(a, col = "colour")
 #' @return new ggplot object
 #' @export
 gg_color_repel <- function(g = ggplot2::last_plot(),
@@ -49,14 +53,14 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   if (autoswitch) {
     col <- check_colour_mapping(g, col = col, autoswitch = autoswitch)
   }
-  .f <- paste0("scale_", col, "_manual")
+  .f <- paste0("ggplot2:::scale_", col, "_manual")
 
   labs <- get_labs(g)
 
   if (all(is.na(labs))) {
-    g <- suppressMessages(g + do.call(.f, c(values = list(newcols))))
+    g <- suppressMessages(g + do.call(eval(parse(text=.f)), c(values = list(newcols))))
   } else {
-    g <- suppressMessages(g + do.call(.f, c(values = list(newcols), labels = list(labs))))
+    g <- suppressMessages(g + do.call(eval(parse(text=.f)), c(values = list(newcols), labels = list(labs))))
   }
 
   if (repel_label) {

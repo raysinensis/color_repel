@@ -15,3 +15,9 @@ named vector of labels
 \description{
 Extract custom labels from ggplot object
 }
+\examples{
+a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) + 
+ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl))) +
+ggplot2::geom_text(ggplot2::aes(label = model))
+get_labs(a)
+}

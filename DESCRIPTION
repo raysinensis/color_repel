@@ -4,10 +4,10 @@ Version: 0.1.0
 Authors@R: 
     person(given = "Rui",
            family = "Fu",
-           role = c("cre", "aut"),
+           role = c("cre", "aut", "cph"),
            email = "raysinensis@gmail.com",
            comment = c(ORCID = "0000-0001-8183-4549"))
-Description: Iterate and repel visually similar colors away in various 'ggplot2' plots, to be more friendly toward colorblind users.
+Description: Iterate and repel visually similar colors away in various 'ggplot2' plots. When many groups are plotted at the same timen on multiple axes, for instance stacked bars or scatterplots, effectively ordering colors becomes difficult. This tool iterates through color combinations to find the best solution to maximize visual distinctness of nearby groups, so plots are more friendly toward colorblind users.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -24,9 +24,10 @@ Imports:
     gtools,
     purrr,
     dplyr,
-    stringr,
     ggplot2,
     ggrepel,
     ggalt
+Suggest:
+    colorspace
 URL: https://github.com/raysinensis/color_repel
 ByteCompile: true
