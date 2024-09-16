@@ -75,7 +75,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
       expand = encircle_expand,
       s_shape = encircle_shape,
       alpha = encircle_alpha,
-      show.legend = F
+      show.legend = FALSE
     )
     g <- suppressMessages(g + do.call("scale_fill_manual", c(values = list(newcols))))
   }

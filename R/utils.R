@@ -87,7 +87,7 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   for (x in names(dfs)) {
     df1 <- dfs[[x]]
     samp <- sample(1:nrow(df1), round((frac * nrow(df1))))
-    em1 <- df1[samp, , drop = F]
+    em1 <- df1[samp, , drop = FALSE]
     vec1 <- rep(x, round((frac * nrow(df1))))
     vecout <- c(vecout, vec1)
     dflist[[x]] <- em1

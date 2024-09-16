@@ -7,7 +7,7 @@ Authors@R:
            role = c("cre", "aut", "cph"),
            email = "raysinensis@gmail.com",
            comment = c(ORCID = "0000-0001-8183-4549"))
-Description: Iterate and repel visually similar colors away in various 'ggplot2' plots. When many groups are plotted at the same time on multiple axes, for instance stacked bars or scatter plots, effectively ordering colors becomes difficult. This tool iterates through color combinations to find the best solution to maximize visual distinctness of nearby groups, so plots are more friendly toward colorblind users. This is achieved by two distance measurements, distance between groups within the plot, and CIELab color space distances between colors as described in Carter et al., (2018) <doi:10.25039/TR.015.2018>.
+Description: Iterate and repel visually similar colors away in various 'ggplot2' plots. When many groups are plotted at the same time on multiple axes, for instance stacked bars or scatter plots, effectively ordering colors becomes difficult. This tool iterates through color combinations to find the best solution to maximize visual distinctness of nearby groups, so plots are more friendly toward colorblind users. This is achieved by two distance measurements, distance between groups within the plot, and CIELAB color space distances between colors as described in Carter et al., (2018) <doi:10.25039/TR.015.2018>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -76,7 +76,7 @@ color_repel <- function(g,
       message("extract plot distances (part 2)...")
     }
     rownames(cdist) <- as.character(1:nrow(cdist))
-    cdist <- suppressMessages(average_clusters_rowwise(cdist, metadata = clust, if_log = F, method = "min", output_log = F, trim = T))
+    cdist <- suppressMessages(average_clusters_rowwise(cdist, metadata = clust, if_log = FALSE, method = "min", output_log = F, trim = T))
     ord <- gtools::mixedorder(colnames(cdist))
     cdist <- cdist[ord, ord]
     cdist[cdist < max(cdist) / 100] <- max(cdist) / 100
