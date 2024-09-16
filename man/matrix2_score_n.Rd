@@ -8,7 +8,7 @@ matrix2_score_n(
   dist1,
   dist2,
   n = min(factorial(ncol(dist2)) * 10, 20000),
-  verbose = F,
+  verbose = FALSE,
   seed = 34,
   out_worst = FALSE
 )

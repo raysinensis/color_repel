@@ -4,7 +4,7 @@
 #' @return numeric score
 matrix2_score <- function(dist1, dist2) {
   temp <- dist1 * dist2
-  max(temp, na.rm = T)
+  max(temp, na.rm = TRUE)
 }
 
 #' Score matrix distances in multiple combinations
@@ -18,7 +18,7 @@ matrix2_score <- function(dist1, dist2) {
 matrix2_score_n <- function(dist1,
                             dist2,
                             n = min(factorial(ncol(dist2)) * 10, 20000),
-                            verbose = F,
+                            verbose = FALSE,
                             seed = 34,
                             out_worst = FALSE) {
   dist1[dist1 == Inf] <- NA
