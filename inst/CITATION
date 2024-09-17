@@ -1,0 +1,11 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "In Situ Spatial Reconstruction of Distinct Normal and Pathological Cell Populations Within the Human Adrenal Gland",
+  author   = "Fu, Rui and Walters, Kathryn and Kaufman, Michael L and Koc, Katrina and Baldwin, Amber and Clay, Michael R and Basham, Kaitlin J and Kiseljak-Vassiliades, Katja and Fishbein, Lauren and Mukherjee, Neelanjan",
+  journal  = "Journal of the Endocrine Society",
+  year     = "2023",
+  volume   = "7",
+  number   = "12",
+  pages    = "bvad131",
+  doi      = "10.1210/jendso/bvad131"
+)

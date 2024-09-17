@@ -1,7 +1,11 @@
 # color_repel
 
-### Repel visually similar colors away for colorblind users
+<!-- badges: start -->
+  [![CRAN status](https://www.r-pkg.org/badges/version/colorrepel)](https://CRAN.R-project.org/package=colorrepel)
+<!-- badges: end -->
 
+### Repel visually similar colors away for colorblind users
+  
 For work (single cell RNA-seq) I make and look at countless plots. Though most packages attempt to be colorblind-aware/friendly, I often find results uninterpretable when over a handful of colors are used. Some helpful strategies include: scatterHatch, adding different hatch patterns to clusters on top of colors; ggtrace; plotly interactivity; etc. But perhaps a simpler solution can be used -- avoid using visually similar colors next to each other (ie. on a UMAP, neighboring clusters should never be light yellow and slightly darker yellow). In 1D plots (barplot, violin plots, etc), we'd simply pass a vector of dissimilar colors. Not so easy to do when 2D and many colors are involved. Hence this simple package.
 
 ### How this works
@@ -16,7 +20,12 @@ For work (single cell RNA-seq) I make and look at countless plots. Though most p
 ### Installation
 
 ```
+# now on CRAN
+install.packages("colorrepel")
+
+# or latest devel version from github
 devtools::install_github("https://github.com/raysinensis/color_repel")
+
 library(colorrepel)
 ?gg_color_repel # overall wrapper function
 ```
@@ -55,3 +64,7 @@ gg_color_repel(a, encircle = T)
 Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
 
 <img width="350" height="285" src="inst/adr1.png">  -->  <img width="350" height="285" src="inst/adr2.png">
+
+### Citation
+
+In situ reconstruction of distinct normal and pathological cell populations within the human adrenal gland.	*Journal of the Endocrine Society*, 2023. Fu R, Walters K, Kaufman M, Kocs K, Baldwin A, Kiseljak-Vassiliades K, Fishbein L, Mukherjee N. https://doi.org/10.1210/jendso/bvad131
