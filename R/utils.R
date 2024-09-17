@@ -598,7 +598,7 @@ average_clusters <- function(mat,
 
 #' ggrepel labeling of clusters
 #' @param g ggplot object or data.frame
-#' @param group_col column name in data.frame, default to "group" in ggplot data
+#' @param group_col column name in data.frame, default to "label" or "group" in ggplot data
 #' @param x column name in data.frame for x
 #' @param y column name in data.frame for y
 #' @param txt_pt text size
@@ -609,13 +609,24 @@ average_clusters <- function(mat,
 #' g <- label_repel(ggplot2::ggplot(mtcars, ggplot2::aes(x = hp, y = wt, color = as.character(cyl))) +
 #'   ggplot2::geom_point(), remove_current = FALSE)
 #' @export
-label_repel <- function(g, group_col = "group", x = "x", y = "y",
-                        txt_pt = 3, remove_current = TRUE, layer = "auto") {
+label_repel <- function(g, group_col = "auto", x = "x", y = "y",
+                        txt_pt = 3, remove_current = "auto", layer = "auto") {
+  g_orig <- g
   if (is.data.frame(g)) {
     so_df <- g
   } else {
     g2 <- ggplot2::ggplot_build(g)
-    so_df <- g2$data[[1]]
+    if (layer == "auto") {
+      layer <- length(g2$data)
+    }
+    so_df <- g2$data[[layer]]
+  }
+  if (group_col == "auto") {
+    if ("label" %in% colnames(so_df)) {
+      group_col <- "label"
+    } else {
+      group_col <- "group"
+    }
   }
   centers <- dplyr::group_by(so_df, !!dplyr::sym(group_col))
   centers <- dplyr::summarize(centers,
@@ -656,11 +667,25 @@ label_repel <- function(g, group_col = "group", x = "x", y = "y",
   if (is.data.frame(g)) {
     d
   } else {
+    if (remove_current == "auto") {
+      remove_current <- check_labels(g_orig)
+    }
     if (remove_current) {
       g <- remove_current_labels(g, layer = layer)
     }
     g + d
   }
+}
+
+check_labels <- function(g, layer = "auto", text = "text|label") {
+  if ("patchwork" %in% class(g)) {
+    g <- g[[1]]
+  }
+  if (layer == "auto") {
+    layer <- length(g[["layers"]])
+  }
+  cs <- stringr::str_to_lower(class(g[["layers"]][[layer]][["geom"]]))
+  any(str_detect(cs, text))
 }
 
 remove_current_labels <- function(g, layer = "auto") {
@@ -674,7 +699,7 @@ remove_current_labels <- function(g, layer = "auto") {
   g
 }
 
-prep_encircle <- function(g, threshold = 0.1, nmin = 0.1, downsample = 5000, seed = 42) {
+prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42) {
   if ("patchwork" %in% class(g)) {
     g <- g[[1]]
   }
@@ -695,7 +720,7 @@ prep_encircle <- function(g, threshold = 0.1, nmin = 0.1, downsample = 5000, see
     distm1 <- as.matrix(distm1)
     cut1 <- stats::quantile(unlist(distm1), probs = threshold)
     n1 <- colSums(distm1 <= cut1)
-    sel1 <- n1 >= nrow(em1) * nmin
+    sel1 <- n1 >= (ceiling(nrow(em1) * nmin))
     dat1 <- em1[sel1, ]
     if (nrow(dat1) <= 3) {
       message("too few points remain in group ", names(ems)[x])

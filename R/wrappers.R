@@ -38,8 +38,8 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            encircle_alpha = 0.25,
                            encircle_expand = 0.02,
                            encircle_shape = 0.5,
-                           encircle_threshold = 0.1,
-                           encircle_nmin = 0.1,
+                           encircle_threshold = 0.01,
+                           encircle_nmin = 0.01,
                            ...) {
   newcols <- color_repel(g,
     col = col, verbose = verbose,
@@ -63,6 +63,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     g <- suppressMessages(g + do.call(eval(parse(text=.f)), c(values = list(newcols), labels = list(labs))))
   }
 
+  tempgg <<- g
   if (repel_label) {
     g <- label_repel(g, ...)
   }
