@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
   [![CRAN status](https://www.r-pkg.org/badges/version/colorrepel)](https://CRAN.R-project.org/package=colorrepel)
+  [![](https://cranlogs.r-pkg.org/badges/grand-total/colorrepel)](https://cran.rstudio.com/web/packages/colorrepel/index.html)
 <!-- badges: end -->
 
 ### Repel visually similar colors away for colorblind users
