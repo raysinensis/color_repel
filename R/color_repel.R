@@ -32,6 +32,7 @@ color_repel <- function(g,
                         autoswitch = TRUE,
                         out_orig = FALSE,
                         out_worst = FALSE) {
+  g <- check_patchwork(g)
   if (verbose) {
     message("extract original colors...")
   }
@@ -42,6 +43,9 @@ color_repel <- function(g,
 
   if (length(cols) <= 1) {
     warning("Did not detect multiple colors, did you specify the correct mapping? Trying to autoswitch...")
+  }
+  if (verbose) {
+    message(cols)
   }
   orig_cols <- cols
   if (out_orig) {
@@ -92,12 +96,14 @@ color_repel <- function(g,
     cdist <- as.matrix(stats::dist(data.frame(x = unique(g2$data[[1]]$group))))
     cdist <- cdist^2
   }
-
   if (verbose) {
-    message("iterate color combinations...")
+    message(dim(cdist))
   }
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 5, 20000)
+  }
+  if (verbose) {
+    message("iterate color combinations...")
   }
   res <- matrix2_score_n(1 / cdist, 1 / coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
   temp <- orig_cols[res]

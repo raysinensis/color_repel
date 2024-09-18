@@ -63,10 +63,6 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     g <- suppressMessages(g + do.call(eval(parse(text=.f)), c(values = list(newcols), labels = list(labs))))
   }
 
-  if (repel_label) {
-    g <- label_repel(g, ...)
-  }
-
   if (encircle) {
     dat <- prep_encircle(g, threshold = encircle_threshold, nmin = encircle_nmin, downsample = downsample, seed = seed)
     g <- g + ggalt::geom_encircle(
@@ -77,7 +73,11 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
       alpha = encircle_alpha,
       show.legend = FALSE
     )
-    g <- suppressMessages(g + do.call("scale_fill_manual", c(values = list(newcols))))
+    g <- suppressMessages(g + do.call(eval(parse(text="ggplot2:::scale_fill_manual")), c(values = list(newcols))))
+  }
+  
+  if (repel_label) {
+    g <- label_repel(g, ...)
   }
 
   g

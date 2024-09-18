@@ -32,7 +32,7 @@ matrix2_score_n <- function(dist1,
   }
   s <- unique(s)
   if (verbose) {
-    message("attempting ", length(s), " calcuations...")
+    message("attempting ", length(s), " calculations...")
     if (length(s) == min(factorial(len))) {
       message("all color combos covered")
     }
@@ -677,10 +677,16 @@ label_repel <- function(g, group_col = "auto", x = "x", y = "y",
   }
 }
 
-check_labels <- function(g, layer = "auto", text = "text|label") {
+check_patchwork <- function(g, layer = 1) {
   if ("patchwork" %in% class(g)) {
-    g <- g[[1]]
+    g[[layer]]
+  } else {
+    g
   }
+}
+
+check_labels <- function(g, layer = "auto", text = "text|label") {
+  g <- check_patchwork(g)
   if (layer == "auto") {
     layer <- length(g[["layers"]])
   }
@@ -689,9 +695,7 @@ check_labels <- function(g, layer = "auto", text = "text|label") {
 }
 
 remove_current_labels <- function(g, layer = "auto") {
-  if ("patchwork" %in% class(g)) {
-    g <- g[[1]]
-  }
+  g <- check_patchwork(g)
   if (layer == "auto") {
     layer <- length(g[["layers"]])
   }
@@ -700,9 +704,7 @@ remove_current_labels <- function(g, layer = "auto") {
 }
 
 prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42) {
-  if ("patchwork" %in% class(g)) {
-    g <- g[[1]]
-  }
+  g <- check_patchwork(g)
   g <- ggplot2::ggplot_build(g)
 
   em <- dplyr::select(g$data[[1]], c(x, y))
