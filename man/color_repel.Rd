@@ -16,6 +16,7 @@ color_repel(
   seed = 34,
   col = "colour",
   autoswitch = TRUE,
+  out_orig = FALSE,
   out_worst = FALSE
 )
 }
@@ -41,6 +42,8 @@ color_repel(
 \item{col}{colour or fill in ggplot}
 
 \item{autoswitch}{try to switch between colour and fill automatically}
+
+\item{out_orig}{output the original colors as named vector}
 
 \item{out_worst}{output the worst combination instead of best}
 }

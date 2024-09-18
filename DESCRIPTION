@@ -1,6 +1,6 @@
 Package: colorrepel
 Title: Repel Visually Similar Colors for Colorblind Users in Various Plots
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Rui",
            family = "Fu",
@@ -24,6 +24,7 @@ Imports:
     gtools,
     purrr,
     dplyr,
+    stringr,
     ggplot2,
     ggrepel,
     ggalt
