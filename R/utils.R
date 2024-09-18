@@ -685,7 +685,7 @@ check_labels <- function(g, layer = "auto", text = "text|label") {
     layer <- length(g[["layers"]])
   }
   cs <- stringr::str_to_lower(class(g[["layers"]][[layer]][["geom"]]))
-  any(str_detect(cs, text))
+  any(stringr::str_detect(cs, text))
 }
 
 remove_current_labels <- function(g, layer = "auto") {

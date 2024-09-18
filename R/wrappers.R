@@ -63,7 +63,6 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     g <- suppressMessages(g + do.call(eval(parse(text=.f)), c(values = list(newcols), labels = list(labs))))
   }
 
-  tempgg <<- g
   if (repel_label) {
     g <- label_repel(g, ...)
   }

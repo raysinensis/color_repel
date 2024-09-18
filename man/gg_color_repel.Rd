@@ -20,8 +20,8 @@ gg_color_repel(
   encircle_alpha = 0.25,
   encircle_expand = 0.02,
   encircle_shape = 0.5,
-  encircle_threshold = 0.1,
-  encircle_nmin = 0.1,
+  encircle_threshold = 0.01,
+  encircle_nmin = 0.01,
   ...
 )
 }

@@ -10,6 +10,7 @@
 #' @param seed sampling randomization seed
 #' @param col colour or fill in ggplot
 #' @param autoswitch try to switch between colour and fill automatically
+#' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
 #' @examples 
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -29,6 +30,7 @@ color_repel <- function(g,
                         seed = 34,
                         col = "colour",
                         autoswitch = TRUE,
+                        out_orig = FALSE,
                         out_worst = FALSE) {
   if (verbose) {
     message("extract original colors...")
@@ -42,6 +44,11 @@ color_repel <- function(g,
     warning("Did not detect multiple colors, did you specify the correct mapping? Trying to autoswitch...")
   }
   orig_cols <- cols
+  if (out_orig) {
+    temp <- orig_cols
+    names(temp) <- sort(unique(g$data[[ggplot2::as_label(g$mapping[[col]])]]))
+    return(temp)
+  }
 
   # deficiency simulation
   if (!is.null(sim)) {
@@ -93,5 +100,7 @@ color_repel <- function(g,
     nsamp <- min(factorial(ncol(cdist)) * 5, 20000)
   }
   res <- matrix2_score_n(1 / cdist, 1 / coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
-  orig_cols[res]
+  temp <- orig_cols[res]
+  names(temp) <- sort(unique(g$data[[ggplot2::as_label(g$mapping[[col]])]]))
+  temp
 }
