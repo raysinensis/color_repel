@@ -12,9 +12,9 @@
 #' @param autoswitch try to switch between colour and fill automatically
 #' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
-#' @examples 
+#' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
-#'  ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
+#'   ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
 #' new_colors <- color_repel(a)
 #' b <- a + ggplot2::scale_color_manual(values = new_colors)
 #' @return vector of reordered colors
@@ -65,6 +65,11 @@ color_repel <- function(g,
   # euclidean distance
   coldist <- as.matrix(stats::dist(colslab))
   coldist[coldist == 0] <- Inf
+  if (verbose) {
+    if (min(coldist) <= 2000) {
+      message("Some original colors may be too similar. Consider changing color scheme.")
+    }
+  }
   coldist <- (coldist - min(coldist[coldist != 0])) / 1000
 
   if (verbose) {
@@ -95,9 +100,6 @@ color_repel <- function(g,
   } else {
     cdist <- as.matrix(stats::dist(data.frame(x = unique(g2$data[[1]]$group))))
     cdist <- cdist^2
-  }
-  if (verbose) {
-    message(dim(cdist))
   }
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 5, 20000)

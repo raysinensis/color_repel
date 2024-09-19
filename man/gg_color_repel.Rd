@@ -70,6 +70,6 @@ Wrapper to reorder ggplot colors to maximize color differences in space
 }
 \examples{
 a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
-ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
+  ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
 b <- gg_color_repel(a, col = "colour")
 }
