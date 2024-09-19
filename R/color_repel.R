@@ -12,9 +12,9 @@
 #' @param autoswitch try to switch between colour and fill automatically
 #' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
-#' @examples 
+#' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
-#'  ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
+#'   ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
 #' new_colors <- color_repel(a)
 #' b <- a + ggplot2::scale_color_manual(values = new_colors)
 #' @return vector of reordered colors
@@ -32,6 +32,7 @@ color_repel <- function(g,
                         autoswitch = TRUE,
                         out_orig = FALSE,
                         out_worst = FALSE) {
+  g <- check_patchwork(g)
   if (verbose) {
     message("extract original colors...")
   }
@@ -42,6 +43,9 @@ color_repel <- function(g,
 
   if (length(cols) <= 1) {
     warning("Did not detect multiple colors, did you specify the correct mapping? Trying to autoswitch...")
+  }
+  if (verbose) {
+    message(cols)
   }
   orig_cols <- cols
   if (out_orig) {
@@ -61,6 +65,11 @@ color_repel <- function(g,
   # euclidean distance
   coldist <- as.matrix(stats::dist(colslab))
   coldist[coldist == 0] <- Inf
+  if (verbose) {
+    if (min(coldist) <= 2000) {
+      message("Some original colors may be too similar. Consider changing color scheme.")
+    }
+  }
   coldist <- (coldist - min(coldist[coldist != 0])) / 1000
 
   if (verbose) {
@@ -92,12 +101,11 @@ color_repel <- function(g,
     cdist <- as.matrix(stats::dist(data.frame(x = unique(g2$data[[1]]$group))))
     cdist <- cdist^2
   }
-
-  if (verbose) {
-    message("iterate color combinations...")
-  }
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 5, 20000)
+  }
+  if (verbose) {
+    message("iterate color combinations...")
   }
   res <- matrix2_score_n(1 / cdist, 1 / coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
   temp <- orig_cols[res]

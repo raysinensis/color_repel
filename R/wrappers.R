@@ -17,9 +17,9 @@
 #' @param encircle_threshold threshold for removing outliers
 #' @param encircle_nmin number of near neighbors for removing outliers
 #' @param ... passed to repel_label
-#' @examples 
+#' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
-#' ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
+#'   ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
 #' b <- gg_color_repel(a, col = "colour")
 #' @return new ggplot object
 #' @export
@@ -58,13 +58,9 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   labs <- get_labs(g)
 
   if (all(is.na(labs))) {
-    g <- suppressMessages(g + do.call(eval(parse(text=.f)), c(values = list(newcols))))
+    g <- suppressMessages(g + do.call(eval(parse(text = .f)), c(values = list(newcols))))
   } else {
-    g <- suppressMessages(g + do.call(eval(parse(text=.f)), c(values = list(newcols), labels = list(labs))))
-  }
-
-  if (repel_label) {
-    g <- label_repel(g, ...)
+    g <- suppressMessages(g + do.call(eval(parse(text = .f)), c(values = list(newcols), labels = list(labs))))
   }
 
   if (encircle) {
@@ -77,7 +73,11 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
       alpha = encircle_alpha,
       show.legend = FALSE
     )
-    g <- suppressMessages(g + do.call("scale_fill_manual", c(values = list(newcols))))
+    g <- suppressMessages(g + do.call(eval(parse(text = "ggplot2:::scale_fill_manual")), c(values = list(newcols))))
+  }
+
+  if (repel_label) {
+    g <- label_repel(g, ...)
   }
 
   g

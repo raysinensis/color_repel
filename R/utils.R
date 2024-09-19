@@ -24,7 +24,7 @@ matrix2_score_n <- function(dist1,
   dist1[dist1 == Inf] <- NA
   dist2[dist2 == Inf] <- NA
   len <- ncol(dist2)
-  
+
   s <- vector("list", n)
   dqrng::dqset.seed(seed)
   for (i in 1:n) {
@@ -32,17 +32,17 @@ matrix2_score_n <- function(dist1,
   }
   s <- unique(s)
   if (verbose) {
-    message("attempting ", length(s), " calcuations...")
+    message("attempting ", length(s), " calculations...")
     if (length(s) == min(factorial(len))) {
       message("all color combos covered")
     }
   }
-  
+
   ord1 <- 1:ncol(dist2)
   score1 <- matrix2_score(dist1, dist2)
   score0 <- score1
   scoremax <- score1
-  
+
   for (i in 1:length(s)) {
     ord_temp <- s[[i]]
     dist3 <- dist2[ord_temp, ord_temp]
@@ -76,8 +76,9 @@ matrix2_score_n <- function(dist1,
 #' @param seed sampling randomization seed
 #' @return list with new downsampled matrix/data.frame and id vector
 #' @examples
-#' res <- by_cluster_sampling(data.frame(y = c(1, 2, 3, 4, 5, 6)), 
-#' vec = c(1, 2, 1, 2, 1, 2), frac = 0.5)
+#' res <- by_cluster_sampling(data.frame(y = c(1, 2, 3, 4, 5, 6)),
+#'   vec = c(1, 2, 1, 2, 1, 2), frac = 0.5
+#' )
 #' @export
 by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   dfs <- split(df, vec)
@@ -96,7 +97,7 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   list(dfout, vecout)
 }
 
-#' Rowwise math from matrix/data.frame per cluster based on another vector/metadata, 
+#' Rowwise math from matrix/data.frame per cluster based on another vector/metadata,
 #' similar to clustifyr::average_clusters but ids as rows
 #' @param mat expression matrix
 #' @param metadata data.frame or vector containing cluster assignments per cell.
@@ -107,7 +108,7 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
 #' @param cluster_col column in metadata with cluster number
 #' @param cell_col if provided, will reorder matrix first
 #' @param low_threshold option to remove clusters with too few cells
-#' @param method whether to take mean (default), median, 10% truncated mean, or trimean, 
+#' @param method whether to take mean (default), median, 10% truncated mean, or trimean,
 #' max, min
 #' @param output_log whether to report log results
 #' @param cut_n set on a limit of genes as expressed, lower ranked genes
@@ -116,8 +117,10 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
 #' @return average expression matrix, with genes for row names, and clusters
 #'  for column names
 #' @examples
-#' mat <- average_clusters_rowwise(data.frame(y = c(1, 2, 3, 4, 5, 6), 
-#' x = c(1, 2, 3, 4, 5, 6)), metadata = c(1, 2, 1, 2, 1, 2), method = "min")
+#' mat <- average_clusters_rowwise(data.frame(
+#'   y = c(1, 2, 3, 4, 5, 6),
+#'   x = c(1, 2, 3, 4, 5, 6)
+#' ), metadata = c(1, 2, 1, 2, 1, 2), method = "min")
 #' @export
 average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_log = FALSE,
                                      cell_col = NULL, low_threshold = 0, method = "mean", output_log = FALSE,
@@ -297,10 +300,10 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
 #' Extract custom labels from ggplot object
 #' @param g ggplot object
 #' @return named vector of labels
-#' @examples 
-#' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) + 
-#' ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl))) +
-#' ggplot2::geom_text(ggplot2::aes(label = model))
+#' @examples
+#' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
+#'   ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl))) +
+#'   ggplot2::geom_text(ggplot2::aes(label = model))
 #' get_labs(a)
 #' @export
 get_labs <- function(g) {
@@ -677,10 +680,16 @@ label_repel <- function(g, group_col = "auto", x = "x", y = "y",
   }
 }
 
-check_labels <- function(g, layer = "auto", text = "text|label") {
+check_patchwork <- function(g, layer = 1) {
   if ("patchwork" %in% class(g)) {
-    g <- g[[1]]
+    g[[layer]]
+  } else {
+    g
   }
+}
+
+check_labels <- function(g, layer = "auto", text = "text|label") {
+  g <- check_patchwork(g)
   if (layer == "auto") {
     layer <- length(g[["layers"]])
   }
@@ -689,9 +698,7 @@ check_labels <- function(g, layer = "auto", text = "text|label") {
 }
 
 remove_current_labels <- function(g, layer = "auto") {
-  if ("patchwork" %in% class(g)) {
-    g <- g[[1]]
-  }
+  g <- check_patchwork(g)
   if (layer == "auto") {
     layer <- length(g[["layers"]])
   }
@@ -700,9 +707,7 @@ remove_current_labels <- function(g, layer = "auto") {
 }
 
 prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42) {
-  if ("patchwork" %in% class(g)) {
-    g <- g[[1]]
-  }
+  g <- check_patchwork(g)
   g <- ggplot2::ggplot_build(g)
 
   em <- dplyr::select(g$data[[1]], c(x, y))
