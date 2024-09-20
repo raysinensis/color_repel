@@ -607,13 +607,14 @@ average_clusters <- function(mat,
 #' @param txt_pt text size
 #' @param remove_current whether to remove current text
 #' @param layer text layer to remove, defaults to last
+#' @param ... arguments passed to geom_text_repel
 #' @return function, if data.frame input, or new ggplot object
 #' @examples
 #' g <- label_repel(ggplot2::ggplot(mtcars, ggplot2::aes(x = hp, y = wt, color = as.character(cyl))) +
 #'   ggplot2::geom_point(), remove_current = FALSE)
 #' @export
 label_repel <- function(g, group_col = "auto", x = "x", y = "y",
-                        txt_pt = 3, remove_current = "auto", layer = "auto") {
+                        txt_pt = 3, remove_current = "auto", layer = "auto", ...) {
   g_orig <- g
   if (is.data.frame(g)) {
     so_df <- g
@@ -664,7 +665,8 @@ label_repel <- function(g, group_col = "auto", x = "x", y = "y",
     point.padding = 0.5,
     box.padding = 0.5,
     max.iter = 50000,
-    max.overlaps = 10000
+    max.overlaps = 10000,
+    ...
   )
 
   if (is.data.frame(g)) {
