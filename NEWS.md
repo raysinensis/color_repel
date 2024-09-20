@@ -1,3 +1,7 @@
+# Changes in version 0.2.0 (2024-09-20)
+* Support for interactive plot conversion
+* Warning when original colors are too similar
+
 # Changes in version 0.1.1 (2024-09-19)
 * Better patchwork support from Seurat plots
 * Option to output color (original or optimized) vector with group names
