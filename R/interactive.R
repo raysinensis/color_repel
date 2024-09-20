@@ -1,5 +1,7 @@
 #' Prepare ggplot object to ggplotly-compatible layer and image layer
 #' @param g ggplot plot object
+#' @param repel_label whether to add centroid labels with ggrepel
+#' @param encircle whether to draw geom_encircle by cluster
 #' @param width plot width
 #' @param height plot height
 #' @param filename temp file location for saving image
@@ -12,9 +14,9 @@
 #' b <- ggplotly_background(a, filename = NULL)
 #' @return plotly object with background image of layers unsupported by plotly
 #' @export
-ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png", draw_box = NULL, ...) {
+ggplotly_background <- function(g, repel_label = T, encircle = F, width = 5, height = 5, filename = "temp.png", draw_box = NULL, ...) {
   a <- g
-  b <- gg_color_repel(a, repel_label = T, nudge_x = 2, nudge_y = 2, force = 10, ...)
+  b <- gg_color_repel(a, repel_label = repel_label, encircle = encircle, nudge_x = 2, nudge_y = 2, force = 10, ...)
   c <- ggplot2::ggplot_build(a)
   xmin <- min(c$data[[1]]$x)
   xmax <- max(c$data[[1]]$x)

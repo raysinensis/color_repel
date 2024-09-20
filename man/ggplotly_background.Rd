@@ -6,6 +6,8 @@
 \usage{
 ggplotly_background(
   g,
+  repel_label = T,
+  encircle = F,
   width = 5,
   height = 5,
   filename = "temp.png",
@@ -15,6 +17,10 @@ ggplotly_background(
 }
 \arguments{
 \item{g}{ggplot plot object}
+
+\item{repel_label}{whether to add centroid labels with ggrepel}
+
+\item{encircle}{whether to draw geom_encircle by cluster}
 
 \item{width}{plot width}
 
