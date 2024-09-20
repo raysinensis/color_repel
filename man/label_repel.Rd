@@ -11,7 +11,8 @@ label_repel(
   y = "y",
   txt_pt = 3,
   remove_current = "auto",
-  layer = "auto"
+  layer = "auto",
+  ...
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ label_repel(
 \item{remove_current}{whether to remove current text}
 
 \item{layer}{text layer to remove, defaults to last}
+
+\item{...}{arguments passed to geom_text_repel}
 }
 \value{
 function, if data.frame input, or new ggplot object

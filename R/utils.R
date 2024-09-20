@@ -308,7 +308,14 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
 #' @export
 get_labs <- function(g) {
   g2 <- ggplot2::ggplot_build(g)
-  g2$plot$scales$scales[[1]]$get_labels()
+  nlayer <- length(g2$plot$scales$scales)
+  for (x in 1:nlayer) {
+    ls <- g2$plot$scales$scales[[x]]$get_labels()
+    if (length(ls) > 0) {
+      return(ls)
+    }
+  }
+  
 }
 
 check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE) {
@@ -607,13 +614,14 @@ average_clusters <- function(mat,
 #' @param txt_pt text size
 #' @param remove_current whether to remove current text
 #' @param layer text layer to remove, defaults to last
+#' @param ... arguments passed to geom_text_repel
 #' @return function, if data.frame input, or new ggplot object
 #' @examples
 #' g <- label_repel(ggplot2::ggplot(mtcars, ggplot2::aes(x = hp, y = wt, color = as.character(cyl))) +
 #'   ggplot2::geom_point(), remove_current = FALSE)
 #' @export
 label_repel <- function(g, group_col = "auto", x = "x", y = "y",
-                        txt_pt = 3, remove_current = "auto", layer = "auto") {
+                        txt_pt = 3, remove_current = "auto", layer = "auto", ...) {
   g_orig <- g
   if (is.data.frame(g)) {
     so_df <- g
@@ -630,6 +638,10 @@ label_repel <- function(g, group_col = "auto", x = "x", y = "y",
     } else {
       group_col <- "group"
     }
+  }
+  if (is.numeric(so_df[[group_col]])) {
+    temp_group <- get_labs(g)
+    so_df[[group_col]] <- factor(so_df[[group_col]], labels = temp_group)
   }
   centers <- dplyr::group_by(so_df, !!dplyr::sym(group_col))
   centers <- dplyr::summarize(centers,
@@ -664,7 +676,8 @@ label_repel <- function(g, group_col = "auto", x = "x", y = "y",
     point.padding = 0.5,
     box.padding = 0.5,
     max.iter = 50000,
-    max.overlaps = 10000
+    max.overlaps = 10000,
+    ...
   )
 
   if (is.data.frame(g)) {
