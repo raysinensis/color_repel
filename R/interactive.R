@@ -20,12 +20,13 @@ ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png",
   xmax <- max(c$data[[1]]$x)
   ymin <- min(c$data[[1]]$y)
   ymax <- max(c$data[[1]]$y)
-  
+
   if ((is.null(filename))) {
     return(plotly::ggplotly(a))
   }
   tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
-                                            filename = filename))
+    filename = filename
+  ))
   ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg)
 }
 
@@ -40,25 +41,27 @@ remove_geom <- function(g, layer = 1) {
 }
 
 prep_background <- function(g, xmin, xmax, ymin, ymax, draw_box = NULL) {
-  g <- g + ggplot2::labs(x=NULL, y=NULL) + 
+  g <- g + ggplot2::labs(x = NULL, y = NULL) +
     ggplot2::coord_cartesian(expand = F, xlim = c(xmin * 1.0, xmax * 1.0), ylim = c(ymin * 1.0, ymax * 1.0), clip = "off") +
-    ggplot2::theme(axis.line = ggplot2::element_blank(), 
-          axis.text.x = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank(),
-          axis.ticks = ggplot2::element_blank(), 
-          axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), 
-          axis.ticks.length = ggplot2::unit(0, "lines"), axis.ticks.margin = ggplot2::unit(0, "lines"), 
-          legend.position = "none", 
-          panel.background = ggplot2::element_blank(), 
-          panel.border = ggplot2::element_blank(), 
-          panel.grid.major = ggplot2::element_blank(), 
-          panel.grid.minor = ggplot2::element_blank(), 
-          panel.margin = ggplot2::unit(0, "lines"), 
-          plot.title = ggplot2::element_blank(), 
-          plot.margin = ggplot2::unit(c(-1, -1, -1.5, -1.5), "lines"))
+    ggplot2::theme(
+      axis.line = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank(),
+      axis.ticks = ggplot2::element_blank(),
+      axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(),
+      axis.ticks.length = ggplot2::unit(0, "lines"), axis.ticks.margin = ggplot2::unit(0, "lines"),
+      legend.position = "none",
+      panel.background = ggplot2::element_blank(),
+      panel.border = ggplot2::element_blank(),
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.margin = ggplot2::unit(0, "lines"),
+      plot.title = ggplot2::element_blank(),
+      plot.margin = ggplot2::unit(c(-1, -1, -1.5, -1.5), "lines")
+    )
   if (is.null(draw_box)) {
     g + ggplot2::theme(plot.background = ggplot2::element_blank())
   } else {
-    g + ggplot2::theme(plot.background = ggplot2::element_rect(fill=draw_box))
+    g + ggplot2::theme(plot.background = ggplot2::element_rect(fill = draw_box))
   }
 }
 
@@ -74,19 +77,23 @@ crop_background <- function(filename = "temp.png") {
 
 ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5) {
   p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
-  
-  p <- plotly::layout(p, autosize = F, 
-                      margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),
-                      scene = list(aspectmode = "data"),
-                      xaxis = list(autorange = F, range = list(xmin*1.0, xmax*1.0)),
-                      yaxis = list(autorange = F, range = list(ymin*1.0, ymax*1.0), scaleanchor= 'x', scaleratio = (xmax - xmin)/(ymax - ymin)),
-                      images = list(source = base64enc::dataURI(file = filename), 
-                                    x = 0, y = 0,
-                                    sizex = 1, sizey = 0.995,
-                                    xref = "xaxis", yref= "yaxis",
-                                    sizing = "stretch",
-                                    xanchor = "left", yanchor = "bottom", layer = "below"),
-                      showlegend = FALSE)
+
+  p <- plotly::layout(p,
+    autosize = F,
+    margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),
+    scene = list(aspectmode = "data"),
+    xaxis = list(autorange = F, range = list(xmin * 1.0, xmax * 1.0)),
+    yaxis = list(autorange = F, range = list(ymin * 1.0, ymax * 1.0), scaleanchor = "x", scaleratio = (xmax - xmin) / (ymax - ymin)),
+    images = list(
+      source = base64enc::dataURI(file = filename),
+      x = 0, y = 0,
+      sizex = 1, sizey = 0.995,
+      xref = "xaxis", yref = "yaxis",
+      sizing = "stretch",
+      xanchor = "left", yanchor = "bottom", layer = "below"
+    ),
+    showlegend = FALSE
+  )
   p <- plotly::config(p, displayModeBar = F)
   p
 }
