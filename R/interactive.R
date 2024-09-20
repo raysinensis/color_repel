@@ -26,15 +26,15 @@ ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png",
   }
   tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
                                             filename = filename))
-  ggplotly_withbg(a, xmin, xmax, ymin, ymax, filename = tempbg)
+  ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg)
 }
 
 remove_geom <- function(g, layer = 1) {
   g2 <- unserialize(serialize(g, NULL))
   if ("patchwork" %in% class(g2)) {
-    g2[[1]]$layers[[layer]]$aes_params$alpha <- 0
+    g2[[1]]$layers[[layer]]$aes_params$alpha <- 0.01
   } else {
-    g2$layers[[layer]]$aes_params$alpha <- 0
+    g2$layers[[layer]]$aes_params$alpha <- 0.01
   }
   g2
 }
