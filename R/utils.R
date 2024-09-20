@@ -315,7 +315,6 @@ get_labs <- function(g) {
       return(ls)
     }
   }
-  
 }
 
 check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE) {
