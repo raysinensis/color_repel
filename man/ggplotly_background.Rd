@@ -6,17 +6,21 @@
 \usage{
 ggplotly_background(
   g,
-  repel_label = T,
-  encircle = F,
+  repel_color = TRUE,
+  repel_label = TRUE,
+  encircle = FALSE,
   width = 5,
   height = 5,
   filename = "temp.png",
   draw_box = NULL,
+  background = NULL,
   ...
 )
 }
 \arguments{
 \item{g}{ggplot plot object}
+
+\item{repel_color}{whether to rearrange colors}
 
 \item{repel_label}{whether to add centroid labels with ggrepel}
 
@@ -29,6 +33,8 @@ ggplotly_background(
 \item{filename}{temp file location for saving image}
 
 \item{draw_box}{if a colored background should be included}
+
+\item{background}{if specified, use this ggplot object as background instead}
 
 \item{...}{arguments passed to gg_color_repel}
 }

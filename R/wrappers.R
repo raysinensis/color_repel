@@ -8,6 +8,7 @@
 #' @param nsamp how many random sampling color combinations to test, default 50000
 #' @param seed sampling randomization seed
 #' @param autoswitch try to switch between colour and fill automatically
+#' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
 #' @param repel_label whether to add centroid labels with ggrepel
 #' @param encircle whether to draw geom_encircle by cluster
@@ -32,6 +33,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            nsamp = 50000,
                            seed = 34,
                            autoswitch = TRUE,
+                           out_orig = FALSE,
                            out_worst = FALSE,
                            repel_label = FALSE,
                            encircle = FALSE,
@@ -47,6 +49,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     nsamp = nsamp, seed = seed,
     sim = sim, severity = severity,
     autoswitch = autoswitch,
+    out_orig = out_orig,
     out_worst = out_worst
   )
 

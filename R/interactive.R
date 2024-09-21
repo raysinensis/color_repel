@@ -1,11 +1,13 @@
 #' Prepare ggplot object to ggplotly-compatible layer and image layer
 #' @param g ggplot plot object
+#' @param repel_color whether to rearrange colors
 #' @param repel_label whether to add centroid labels with ggrepel
 #' @param encircle whether to draw geom_encircle by cluster
 #' @param width plot width
 #' @param height plot height
 #' @param filename temp file location for saving image
 #' @param draw_box if a colored background should be included
+#' @param background if specified, use this ggplot object as background instead
 #' @param ... arguments passed to gg_color_repel
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -14,9 +16,11 @@
 #' b <- ggplotly_background(a, filename = NULL)
 #' @return plotly object with background image of layers unsupported by plotly
 #' @export
-ggplotly_background <- function(g, repel_label = T, encircle = F, width = 5, height = 5, filename = "temp.png", draw_box = NULL, ...) {
+ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encircle = FALSE, 
+                                width = 5, height = 5, filename = "temp.png", draw_box = NULL, background = NULL,
+                                ...) {
   a <- g
-  b <- gg_color_repel(a, repel_label = repel_label, encircle = encircle, nudge_x = 2, nudge_y = 2, force = 10, ...)
+  b <- gg_color_repel(a, out_orig = !repel_color, repel_label = repel_label, encircle = encircle, nudge_x = 2, nudge_y = 2, force = 10, ...)
   c <- ggplot2::ggplot_build(a)
   xmin <- min(c$data[[1]]$x)
   xmax <- max(c$data[[1]]$x)
@@ -26,9 +30,16 @@ ggplotly_background <- function(g, repel_label = T, encircle = F, width = 5, hei
   if ((is.null(filename))) {
     return(plotly::ggplotly(a))
   }
-  tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
-    filename = filename
-  ))
+  if (is.null((background))) {
+    tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
+                                              filename = filename
+    ))
+  } else {
+    tempbg <- crop_background(save_background(prep_background(background, xmin, xmax, ymin, ymax, draw_box),
+                                              filename = filename
+    ))
+  }
+
   ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg)
 }
 
@@ -82,10 +93,10 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", wi
 
   p <- plotly::layout(p,
     autosize = F,
-    margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),
+    margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = TRUE),
     scene = list(aspectmode = "data"),
-    xaxis = list(autorange = F, range = list(xmin * 1.0, xmax * 1.0)),
-    yaxis = list(autorange = F, range = list(ymin * 1.0, ymax * 1.0), scaleanchor = "x", scaleratio = (xmax - xmin) / (ymax - ymin)),
+    xaxis = list(autorange = FALSE, range = list(xmin * 1.0, xmax * 1.0)),
+    yaxis = list(autorange = FALSE, range = list(ymin * 1.0, ymax * 1.0), scaleanchor = "x", scaleratio = (xmax - xmin) / (ymax - ymin)),
     images = list(
       source = base64enc::dataURI(file = filename),
       x = 0, y = 0,
