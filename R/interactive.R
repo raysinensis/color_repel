@@ -1,9 +1,14 @@
 #' Prepare ggplot object to ggplotly-compatible layer and image layer
 #' @param g ggplot plot object
+#' @param repel_color whether to rearrange colors
+#' @param repel_label whether to add centroid labels with ggrepel
+#' @param encircle whether to draw geom_encircle by cluster
 #' @param width plot width
 #' @param height plot height
 #' @param filename temp file location for saving image
 #' @param draw_box if a colored background should be included
+#' @param background if specified, use this ggplot object or file as background instead
+#' @param background_alpha alpha value of background image
 #' @param ... arguments passed to gg_color_repel
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -12,9 +17,11 @@
 #' b <- ggplotly_background(a, filename = NULL)
 #' @return plotly object with background image of layers unsupported by plotly
 #' @export
-ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png", draw_box = NULL, ...) {
+ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encircle = FALSE, 
+                                width = 5, height = 5, filename = "temp.png", draw_box = NULL, 
+                                background = NULL, background_alpha = 1, ...) {
   a <- g
-  b <- gg_color_repel(a, repel_label = T, nudge_x = 2, nudge_y = 2, force = 10, ...)
+  b <- gg_color_repel(a, out_orig = !repel_color, repel_label = repel_label, encircle = encircle, nudge_x = 2, nudge_y = 2, force = 10, ...)
   c <- ggplot2::ggplot_build(a)
   xmin <- min(c$data[[1]]$x)
   xmax <- max(c$data[[1]]$x)
@@ -24,10 +31,21 @@ ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png",
   if ((is.null(filename))) {
     return(plotly::ggplotly(a))
   }
-  tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
-    filename = filename
-  ))
-  ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg)
+  if (is.null((background))) {
+    tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
+                                              filename = filename
+    ))
+  } else {
+    if (!("character" %in% class(background))) {
+      tempbg <- crop_background(save_background(prep_background(background, xmin, xmax, ymin, ymax, draw_box),
+                                                filename = filename
+      ))
+    } else {
+      tempbg <- background
+    }
+  }
+
+  ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg, alpha = background_alpha)
 }
 
 remove_geom <- function(g, layer = 1) {
@@ -75,25 +93,23 @@ crop_background <- function(filename = "temp.png") {
   return(filename)
 }
 
-ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5) {
+ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5, alpha = 1) {
   p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
 
-  p <- plotly::layout(p,
-    autosize = F,
-    margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),
-    scene = list(aspectmode = "data"),
-    xaxis = list(autorange = F, range = list(xmin * 1.0, xmax * 1.0)),
-    yaxis = list(autorange = F, range = list(ymin * 1.0, ymax * 1.0), scaleanchor = "x", scaleratio = (xmax - xmin) / (ymax - ymin)),
-    images = list(
-      source = base64enc::dataURI(file = filename),
-      x = 0, y = 0,
-      sizex = 1, sizey = 0.995,
-      xref = "xaxis", yref = "yaxis",
-      sizing = "stretch",
-      xanchor = "left", yanchor = "bottom", layer = "below"
-    ),
-    showlegend = FALSE
-  )
+  p <- plotly::layout(p, autosize = F, 
+                      margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),
+                      scene = list(aspectmode = "data"),
+                      xaxis = list(autorange = F, range = list(xmin*1.0, xmax*1.0)),
+                      yaxis = list(autorange = F, range = list(ymin*1.0, ymax*1.0), scaleanchor= 'x', scaleratio = (xmax - xmin)/(ymax - ymin)),
+                      images = list(
+                        source = plotly::raster2uri(grDevices::as.raster(png::readPNG(filename))),
+                        opacity = alpha,
+                        x = xmin, y = ymin,
+                        sizex = xmax - xmin, sizey = ymax - ymin,
+                        xref = "x1", yref= "y1",
+                        sizing = "stretch",
+                        xanchor = "left", yanchor = "bottom", layer = "below"),
+                      showlegend = FALSE)
   p <- plotly::config(p, displayModeBar = F)
   p
 }
