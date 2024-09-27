@@ -7,7 +7,7 @@
 #' @param height plot height
 #' @param filename temp file location for saving image
 #' @param draw_box if a colored background should be included
-#' @param background if specified, use this ggplot object as background instead
+#' @param background if specified, use this ggplot object or file as background instead
 #' @param background_alpha alpha value of background image
 #' @param ... arguments passed to gg_color_repel
 #' @examples
@@ -36,9 +36,13 @@ ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encir
                                               filename = filename
     ))
   } else {
-    tempbg <- crop_background(save_background(prep_background(background, xmin, xmax, ymin, ymax, draw_box),
-                                              filename = filename
-    ))
+    if (!("character" %in% class(background))) {
+      tempbg <- crop_background(save_background(prep_background(background, xmin, xmax, ymin, ymax, draw_box),
+                                                filename = filename
+      ))
+    } else {
+      tempbg <- background
+    }
   }
 
   ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg, alpha = background_alpha)
