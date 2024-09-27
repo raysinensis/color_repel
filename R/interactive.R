@@ -4,6 +4,7 @@
 #' @param height plot height
 #' @param filename temp file location for saving image
 #' @param draw_box if a colored background should be included
+#' @param background_alpha alpha value of background image
 #' @param ... arguments passed to gg_color_repel
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -12,9 +13,9 @@
 #' b <- ggplotly_background(a, filename = NULL)
 #' @return plotly object with background image of layers unsupported by plotly
 #' @export
-ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png", draw_box = NULL, ...) {
+ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png", draw_box = NULL, background_alpha = 1, ...) {
   a <- g
-  b <- gg_color_repel(a, repel_label = T, nudge_x = 2, nudge_y = 2, force = 10, ...)
+  b <- gg_color_repel(a, nudge_x = 2, nudge_y = 2, force = 10, ...)
   c <- ggplot2::ggplot_build(a)
   xmin <- min(c$data[[1]]$x)
   xmax <- max(c$data[[1]]$x)
@@ -26,7 +27,7 @@ ggplotly_background <- function(g, width = 5, height = 5, filename = "temp.png",
   }
   tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
                                             filename = filename))
-  ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg)
+  ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg, alpha = background_alpha)
 }
 
 remove_geom <- function(g, layer = 1) {
@@ -72,7 +73,7 @@ crop_background <- function(filename = "temp.png") {
   return(filename)
 }
 
-ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5) {
+ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5, alpha = 1) {
   p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
   
   p <- plotly::layout(p, autosize = F, 
@@ -80,10 +81,12 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", wi
                       scene = list(aspectmode = "data"),
                       xaxis = list(autorange = F, range = list(xmin*1.0, xmax*1.0)),
                       yaxis = list(autorange = F, range = list(ymin*1.0, ymax*1.0), scaleanchor= 'x', scaleratio = (xmax - xmin)/(ymax - ymin)),
-                      images = list(source = base64enc::dataURI(file = filename), 
-                                    x = 0, y = 0,
-                                    sizex = 1, sizey = 0.995,
-                                    xref = "xaxis", yref= "yaxis",
+                      images = list(#source = base64enc::dataURI(file = filename), 
+                                    source = raster2uri(as.raster(png::readPNG(filename))),
+                                    opacity = alpha,
+                                    x = xmin, y = ymin,
+                                    sizex = xmax - xmin, sizey = ymax - ymin,
+                                    xref = "x1", yref= "y1",
                                     sizing = "stretch",
                                     xanchor = "left", yanchor = "bottom", layer = "below"),
                       showlegend = FALSE)
