@@ -14,6 +14,7 @@ ggplotly_background(
   filename = "temp.png",
   draw_box = NULL,
   background = NULL,
+  background_alpha = 1,
   ...
 )
 }
@@ -35,6 +36,8 @@ ggplotly_background(
 \item{draw_box}{if a colored background should be included}
 
 \item{background}{if specified, use this ggplot object as background instead}
+
+\item{background_alpha}{alpha value of background image}
 
 \item{...}{arguments passed to gg_color_repel}
 }

@@ -30,7 +30,7 @@ Imports:
     ggalt,
     plotly,
     knitr,
-    base64enc
+    png
 Suggests:
     colorspace
 URL: https://github.com/raysinensis/color_repel
