@@ -98,7 +98,7 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", wi
                       xaxis = list(autorange = F, range = list(xmin*1.0, xmax*1.0)),
                       yaxis = list(autorange = F, range = list(ymin*1.0, ymax*1.0), scaleanchor= 'x', scaleratio = (xmax - xmin)/(ymax - ymin)),
                       images = list(
-                        source = raster2uri(as.raster(png::readPNG(filename))),
+                        source = plotly::raster2uri(grDevices::as.raster(png::readPNG(filename))),
                         opacity = alpha,
                         x = xmin, y = ymin,
                         sizex = xmax - xmin, sizey = ymax - ymin,
