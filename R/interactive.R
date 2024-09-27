@@ -9,6 +9,7 @@
 #' @param draw_box if a colored background should be included
 #' @param background if specified, use this ggplot object or file as background instead
 #' @param background_alpha alpha value of background image
+#' @param use_cairo whether to use cairo for saving plots, maybe needed for certain ggplot extensions
 #' @param ... arguments passed to gg_color_repel
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -19,7 +20,7 @@
 #' @export
 ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encircle = FALSE, 
                                 width = 5, height = 5, filename = "temp.png", draw_box = NULL, 
-                                background = NULL, background_alpha = 1, ...) {
+                                background = NULL, background_alpha = 1, use_cairo = FALSE, ...) {
   a <- g
   b <- gg_color_repel(a, out_orig = !repel_color, repel_label = repel_label, encircle = encircle, nudge_x = 2, nudge_y = 2, force = 10, ...)
   c <- ggplot2::ggplot_build(a)
@@ -33,12 +34,12 @@ ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encir
   }
   if (is.null((background))) {
     tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
-                                              filename = filename
+                                              filename = filename, use_cairo = use_cairo
     ))
   } else {
     if (!("character" %in% class(background))) {
       tempbg <- crop_background(save_background(prep_background(background, xmin, xmax, ymin, ymax, draw_box),
-                                                filename = filename
+                                                filename = filename, use_cairo = use_cairo
       ))
     } else {
       tempbg <- background
@@ -83,8 +84,12 @@ prep_background <- function(g, xmin, xmax, ymin, ymax, draw_box = NULL) {
   }
 }
 
-save_background <- function(g, filename = "temp.png", width = 5, height = 5) {
-  ggplot2::ggsave(filename, g, width = width, height = height)
+save_background <- function(g, filename = "temp.png", width = 5, height = 5, use_cairo = FALSE) {
+  if (!use_cairo) {
+    ggplot2::ggsave(filename, g, width = width, height = height)
+  } else {
+    ggplot2::ggsave(filename, g, width = width, height = height, type = "cairo")
+  }
   return(filename)
 }
 

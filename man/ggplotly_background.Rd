@@ -15,6 +15,7 @@ ggplotly_background(
   draw_box = NULL,
   background = NULL,
   background_alpha = 1,
+  use_cairo = FALSE,
   ...
 )
 }
@@ -38,6 +39,8 @@ ggplotly_background(
 \item{background}{if specified, use this ggplot object or file as background instead}
 
 \item{background_alpha}{alpha value of background image}
+
+\item{use_cairo}{whether to use cairo for saving plots, maybe needed for certain ggplot extensions}
 
 \item{...}{arguments passed to gg_color_repel}
 }
