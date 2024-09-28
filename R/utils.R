@@ -97,6 +97,22 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   list(dfout, vecout)
 }
 
+by_cluster_chull <- function(df, vec, xcol, ycol) {
+  dfs <- split(df, vec)
+  vecout <- c()
+  dflist <- list()
+  for (x in names(dfs)) {
+    df1 <- dfs[[x]]
+    samp <- grDevices::chull(df1[[xcol]], df1[[ycol]])
+    em1 <- df1[samp, , drop = FALSE]
+    vec1 <- rep(x, nrow(em1))
+    vecout <- c(vecout, vec1)
+    dflist[[x]] <- em1
+  }
+  dfout <- do.call(rbind, dflist)
+  list(dfout, vecout)
+}
+
 #' Rowwise math from matrix/data.frame per cluster based on another vector/metadata,
 #' similar to clustifyr::average_clusters but ids as rows
 #' @param mat expression matrix

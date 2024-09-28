@@ -35,7 +35,7 @@ color_repel(
 
 \item{verbose}{whether to print messages}
 
-\item{downsample}{downsample when too many datapoints are present}
+\item{downsample}{downsample when too many datapoints are present, or use chull}
 
 \item{seed}{sampling randomization seed}
 
