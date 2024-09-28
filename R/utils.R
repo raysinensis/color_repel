@@ -747,3 +747,8 @@ prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, s
   })
   dplyr::bind_rows(dat)
 }
+
+expand_lims <- function(xmin, xmax, by = 0.1) {
+  len <- xmax - xmin
+  return(c(xmin - len*by, xmax + len*by))
+}

@@ -16,6 +16,7 @@ ggplotly_background(
   background = NULL,
   background_alpha = 1,
   use_cairo = FALSE,
+  label_lim = 0.05,
   ...
 )
 }
@@ -41,6 +42,8 @@ ggplotly_background(
 \item{background_alpha}{alpha value of background image}
 
 \item{use_cairo}{whether to use cairo for saving plots, maybe needed for certain ggplot extensions}
+
+\item{label_lim}{whether to limit labels to avoid edge fraction}
 
 \item{...}{arguments passed to gg_color_repel}
 }
