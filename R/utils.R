@@ -601,7 +601,6 @@ average_clusters <- function(mat,
     expr_mat[df_temp > cut_n] <- 0
     out <- expr_mat
   }
-
   return(out)
 }
 
@@ -721,7 +720,6 @@ remove_current_labels <- function(g, layer = "auto") {
 prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42) {
   g <- check_patchwork(g)
   g <- ggplot2::ggplot_build(g)
-
   em <- dplyr::select(g$data[[1]], c(x, y))
   clust <- g$data[[1]]$group
   if (nrow(em) > downsample) {
@@ -750,5 +748,5 @@ prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, s
 
 expand_lims <- function(xmin, xmax, by = 0.1) {
   len <- xmax - xmin
-  return(c(xmin - len*by, xmax + len*by))
+  return(c(xmin - len * by, xmax + len * by))
 }

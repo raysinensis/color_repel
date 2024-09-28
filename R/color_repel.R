@@ -33,6 +33,7 @@ color_repel <- function(g,
                         out_orig = FALSE,
                         out_worst = FALSE) {
   g <- check_patchwork(g)
+
   if (verbose) {
     message("extract original colors...")
   }
