@@ -8,6 +8,7 @@
 #' @param nsamp how many random sampling color combinations to test, default 50000
 #' @param seed sampling randomization seed
 #' @param autoswitch try to switch between colour and fill automatically
+#' @param layer layer to detect color, defaults to first
 #' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
 #' @param repel_label whether to add centroid labels with ggrepel
@@ -33,6 +34,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            nsamp = 50000,
                            seed = 34,
                            autoswitch = TRUE,
+                           layer = 1,
                            out_orig = FALSE,
                            out_worst = FALSE,
                            repel_label = FALSE,
@@ -48,13 +50,13 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     downsample = downsample,
     nsamp = nsamp, seed = seed,
     sim = sim, severity = severity,
-    autoswitch = autoswitch,
+    autoswitch = autoswitch, layer = layer,
     out_orig = out_orig,
     out_worst = out_worst
   )
 
   if (autoswitch) {
-    col <- check_colour_mapping(g, col = col, autoswitch = autoswitch)
+    col <- check_colour_mapping(g, col = col, autoswitch = autoswitch, layer = layer)
   }
   .f <- paste0("ggplot2:::scale_", col, "_manual")
 

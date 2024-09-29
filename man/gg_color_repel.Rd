@@ -14,6 +14,7 @@ gg_color_repel(
   nsamp = 50000,
   seed = 34,
   autoswitch = TRUE,
+  layer = 1,
   out_orig = FALSE,
   out_worst = FALSE,
   repel_label = FALSE,
@@ -44,6 +45,8 @@ gg_color_repel(
 \item{seed}{sampling randomization seed}
 
 \item{autoswitch}{try to switch between colour and fill automatically}
+
+\item{layer}{layer to detect color, defaults to first}
 
 \item{out_orig}{output the original colors as named vector}
 

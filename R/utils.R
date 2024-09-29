@@ -97,6 +97,22 @@ by_cluster_sampling <- function(df, vec, frac, seed = 34) {
   list(dfout, vecout)
 }
 
+by_cluster_chull <- function(df, vec, xcol, ycol) {
+  dfs <- split(df, vec)
+  vecout <- c()
+  dflist <- list()
+  for (x in names(dfs)) {
+    df1 <- dfs[[x]]
+    samp <- grDevices::chull(df1[[xcol]], df1[[ycol]])
+    em1 <- df1[samp, , drop = FALSE]
+    vec1 <- rep(x, nrow(em1))
+    vecout <- c(vecout, vec1)
+    dflist[[x]] <- em1
+  }
+  dfout <- do.call(rbind, dflist)
+  list(dfout, vecout)
+}
+
 #' Rowwise math from matrix/data.frame per cluster based on another vector/metadata,
 #' similar to clustifyr::average_clusters but ids as rows
 #' @param mat expression matrix
@@ -317,9 +333,9 @@ get_labs <- function(g) {
   }
 }
 
-check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE) {
+check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE, layer = 1) {
   g2 <- ggplot2::ggplot_build(g)
-  cols <- dplyr::arrange(g2$data[[1]], group)
+  cols <- dplyr::arrange(g2$data[[layer]], group)
   cols <- unique(cols[[col]])
   if (length(cols) <= 1) {
     if (!autoswitch) {
@@ -330,7 +346,7 @@ check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswit
     } else {
       col <- "fill"
     }
-    cols <- dplyr::arrange(g2$data[[1]], group)
+    cols <- dplyr::arrange(g2$data[[layer]], group)
     cols <- unique(cols[[col]])
   }
   if (return_col) {
@@ -601,7 +617,6 @@ average_clusters <- function(mat,
     expr_mat[df_temp > cut_n] <- 0
     out <- expr_mat
   }
-
   return(out)
 }
 
@@ -721,7 +736,6 @@ remove_current_labels <- function(g, layer = "auto") {
 prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42) {
   g <- check_patchwork(g)
   g <- ggplot2::ggplot_build(g)
-
   em <- dplyr::select(g$data[[1]], c(x, y))
   clust <- g$data[[1]]$group
   if (nrow(em) > downsample) {
@@ -750,5 +764,5 @@ prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, s
 
 expand_lims <- function(xmin, xmax, by = 0.1) {
   len <- xmax - xmin
-  return(c(xmin - len*by, xmax + len*by))
+  return(c(xmin - len * by, xmax + len * by))
 }

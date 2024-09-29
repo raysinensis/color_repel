@@ -19,10 +19,10 @@
 #' b <- ggplotly_background(a, filename = NULL)
 #' @return plotly object with background image of layers unsupported by plotly
 #' @export
-ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encircle = FALSE, 
+ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encircle = FALSE,
                                 width = 5, height = 5,
-                                filename = "temp.png", draw_box = NULL, 
-                                background = NULL, background_alpha = 1, use_cairo = FALSE, label_lim = 0.05, 
+                                filename = "temp.png", draw_box = NULL,
+                                background = NULL, background_alpha = 1, use_cairo = FALSE, label_lim = 0.05,
                                 ...) {
   a <- g
   c <- ggplot2::ggplot_build(a)
@@ -30,21 +30,23 @@ ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encir
   xmax <- max(c$data[[1]]$x)
   ymin <- min(c$data[[1]]$y)
   ymax <- max(c$data[[1]]$y)
-  b <- gg_color_repel(a, out_orig = !repel_color, repel_label = repel_label, encircle = encircle,
-                      force = 10, xlim = expand_lims(xmin, xmax, -label_lim), ylim = expand_lims(ymin, ymax, -label_lim), 
-                      ...)
-  
+  b <- gg_color_repel(a,
+    out_orig = !repel_color, repel_label = repel_label, encircle = encircle,
+    force = 10, xlim = expand_lims(xmin, xmax, -label_lim), ylim = expand_lims(ymin, ymax, -label_lim),
+    ...
+  )
+
   if ((is.null(filename))) {
     return(plotly::ggplotly(a))
   }
   if (is.null((background))) {
     tempbg <- crop_background(save_background(prep_background(remove_geom(b), xmin, xmax, ymin, ymax, draw_box),
-                                              filename = filename, use_cairo = use_cairo
+      filename = filename, use_cairo = use_cairo
     ))
   } else {
     if (!("character" %in% class(background))) {
       tempbg <- crop_background(save_background(prep_background(background, xmin, xmax, ymin, ymax, draw_box),
-                                                filename = filename, use_cairo = use_cairo
+        filename = filename, use_cairo = use_cairo
       ))
     } else {
       tempbg <- background
@@ -56,6 +58,7 @@ ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encir
 
 remove_geom <- function(g, layer = 1) {
   g2 <- unserialize(serialize(g, NULL))
+
   if ("patchwork" %in% class(g2)) {
     g2[[1]]$layers[[layer]]$aes_params$alpha <- 0.01
   } else {
@@ -82,6 +85,7 @@ prep_background <- function(g, xmin, xmax, ymin, ymax, draw_box = NULL) {
       plot.title = ggplot2::element_blank(),
       plot.margin = ggplot2::unit(c(-1, -1, -1.5, -1.5), "lines")
     )
+
   if (is.null(draw_box)) {
     g + ggplot2::theme(plot.background = ggplot2::element_blank())
   } else {
@@ -105,21 +109,23 @@ crop_background <- function(filename = "temp.png") {
 
 ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5, alpha = 1) {
   p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
-
-  p <- plotly::layout(p, autosize = F, 
-                      margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),
-                      scene = list(aspectmode = "data"),
-                      xaxis = list(autorange = F, range = as.list(expand_lims(xmin, xmax))),
-                      yaxis = list(autorange = F, range = as.list(expand_lims(ymin, ymax)), scaleanchor= 'x', scaleratio = (xmax - xmin)/(ymax - ymin)),
-                      images = list(
-                        source = plotly::raster2uri(grDevices::as.raster(png::readPNG(filename))),
-                        opacity = alpha,
-                        x = xmin, y = ymin,
-                        sizex = xmax - xmin, sizey = ymax - ymin,
-                        xref = "x1", yref= "y1",
-                        sizing = "stretch",
-                        xanchor = "left", yanchor = "bottom", layer = "below"),
-                      showlegend = FALSE)
+  p <- plotly::layout(p,
+    autosize = F,
+    margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),
+    scene = list(aspectmode = "data"),
+    xaxis = list(autorange = F, range = as.list(expand_lims(xmin, xmax))),
+    yaxis = list(autorange = F, range = as.list(expand_lims(ymin, ymax)), scaleanchor = "x", scaleratio = (xmax - xmin) / (ymax - ymin)),
+    images = list(
+      source = plotly::raster2uri(grDevices::as.raster(png::readPNG(filename))),
+      opacity = alpha,
+      x = xmin, y = ymin,
+      sizex = xmax - xmin, sizey = ymax - ymin,
+      xref = "x1", yref = "y1",
+      sizing = "stretch",
+      xanchor = "left", yanchor = "bottom", layer = "below"
+    ),
+    showlegend = FALSE
+  )
   p <- plotly::config(p, displayModeBar = F)
   p
 }

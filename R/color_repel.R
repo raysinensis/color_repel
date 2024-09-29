@@ -6,10 +6,11 @@
 #' @param sim passing a colorbind simulation function if needed
 #' @param severity severity of the color vision defect, between 0 and 1
 #' @param verbose whether to print messages
-#' @param downsample downsample when too many datapoints are present
+#' @param downsample downsample when too many datapoints are present, or use chull
 #' @param seed sampling randomization seed
 #' @param col colour or fill in ggplot
 #' @param autoswitch try to switch between colour and fill automatically
+#' @param layer layer to detect color, defaults to first
 #' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
 #' @examples
@@ -30,13 +31,15 @@ color_repel <- function(g,
                         seed = 34,
                         col = "colour",
                         autoswitch = TRUE,
+                        layer = 1,
                         out_orig = FALSE,
                         out_worst = FALSE) {
   g <- check_patchwork(g)
+
   if (verbose) {
     message("extract original colors...")
   }
-  temp <- check_colour_mapping(g, col = col, return_col = TRUE, autoswitch = autoswitch)
+  temp <- check_colour_mapping(g, col = col, return_col = TRUE, autoswitch = autoswitch, layer = layer)
   col <- temp[["col"]]
   cols <- temp[["cols"]]
   g2 <- ggplot2::ggplot_build(g)
@@ -75,16 +78,23 @@ color_repel <- function(g,
   if (verbose) {
     message("extract plot distances...")
   }
-  if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
+  if (all(c("x", "y") %in% colnames(g2$data[[layer]]))) {
     em <- dplyr::select(g2$data[[1]], x, y)
     # clustering info
-    clust <- as.character(g2$data[[1]][[col]])
+    clust <- as.character(g2$data[[layer]][[col]])
     clust <- as.character(as.numeric(factor(clust, levels = orig_cols)))
-    if (nrow(em) > downsample) {
-      frac <- downsample / nrow(em)
-      res <- by_cluster_sampling(em, clust, frac, seed = seed)
+    if (downsample == "chull") {
+      res <- by_cluster_chull(em, clust, xcol = "x", ycol = "y")
       em <- res[[1]]
       clust <- res[[2]]
+    } else {
+      if (nrow(em) > downsample) {
+        message("downsampling... (also consider trying downsample='chull')")
+        frac <- downsample / nrow(em)
+        res <- by_cluster_sampling(em, clust, frac, seed = seed)
+        em <- res[[1]]
+        clust <- res[[2]]
+      }
     }
     # min distance between clusters on plot
     cdist <- suppressMessages(calc_distance(em, clust))
@@ -92,7 +102,9 @@ color_repel <- function(g,
       message("extract plot distances (part 2)...")
     }
     rownames(cdist) <- as.character(1:nrow(cdist))
-    cdist <- suppressMessages(average_clusters_rowwise(cdist, metadata = clust, if_log = FALSE, method = "min", output_log = F, trim = T))
+    cdist <- suppressMessages(average_clusters_rowwise(cdist, metadata = clust, 
+                                                       if_log = FALSE, method = "min", 
+                                                       output_log = FALSE, trim = TRUE))
     ord <- gtools::mixedorder(colnames(cdist))
     cdist <- cdist[ord, ord]
     cdist[cdist < max(cdist) / 100] <- max(cdist) / 100
