@@ -1,3 +1,7 @@
+# Changes in version 0.3.0 (2024-09-29)
+* Option to use chull to simplify optimization
+* Better more flexible layer handling
+
 # Changes in version 0.2.1 (2024-09-27)
 * Support for plotly zoom and scroll
 * Support for using saved image backgrounds
