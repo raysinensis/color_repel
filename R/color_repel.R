@@ -87,6 +87,7 @@ color_repel <- function(g,
       clust <- res[[2]]
     } else {
       if (nrow(em) > downsample) {
+        message("downsampling... (also consider trying downsample='chull')")
         frac <- downsample / nrow(em)
         res <- by_cluster_sampling(em, clust, frac, seed = seed)
         em <- res[[1]]
