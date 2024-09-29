@@ -10,6 +10,7 @@
 #' @param seed sampling randomization seed
 #' @param col colour or fill in ggplot
 #' @param autoswitch try to switch between colour and fill automatically
+#' @param layer layer to detect color, defaults to first
 #' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
 #' @examples
@@ -30,6 +31,7 @@ color_repel <- function(g,
                         seed = 34,
                         col = "colour",
                         autoswitch = TRUE,
+                        layer = 1,
                         out_orig = FALSE,
                         out_worst = FALSE) {
   g <- check_patchwork(g)
@@ -37,7 +39,7 @@ color_repel <- function(g,
   if (verbose) {
     message("extract original colors...")
   }
-  temp <- check_colour_mapping(g, col = col, return_col = TRUE, autoswitch = autoswitch)
+  temp <- check_colour_mapping(g, col = col, return_col = TRUE, autoswitch = autoswitch, layer = layer)
   col <- temp[["col"]]
   cols <- temp[["cols"]]
   g2 <- ggplot2::ggplot_build(g)
@@ -76,10 +78,10 @@ color_repel <- function(g,
   if (verbose) {
     message("extract plot distances...")
   }
-  if (all(c("x", "y") %in% colnames(g2$data[[1]]))) {
+  if (all(c("x", "y") %in% colnames(g2$data[[layer]]))) {
     em <- dplyr::select(g2$data[[1]], x, y)
     # clustering info
-    clust <- as.character(g2$data[[1]][[col]])
+    clust <- as.character(g2$data[[layer]][[col]])
     clust <- as.character(as.numeric(factor(clust, levels = orig_cols)))
     if (downsample == "chull") {
       res <- by_cluster_chull(em, clust, xcol = "x", ycol = "y")

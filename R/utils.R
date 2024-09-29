@@ -333,9 +333,9 @@ get_labs <- function(g) {
   }
 }
 
-check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE) {
+check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE, layer = 1) {
   g2 <- ggplot2::ggplot_build(g)
-  cols <- dplyr::arrange(g2$data[[1]], group)
+  cols <- dplyr::arrange(g2$data[[layer]], group)
   cols <- unique(cols[[col]])
   if (length(cols) <= 1) {
     if (!autoswitch) {
@@ -346,7 +346,7 @@ check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswit
     } else {
       col <- "fill"
     }
-    cols <- dplyr::arrange(g2$data[[1]], group)
+    cols <- dplyr::arrange(g2$data[[layer]], group)
     cols <- unique(cols[[col]])
   }
   if (return_col) {
