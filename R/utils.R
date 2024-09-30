@@ -125,7 +125,7 @@ by_cluster_chull <- function(df, vec, xcol, ycol) {
 #' @param cell_col if provided, will reorder matrix first
 #' @param low_threshold option to remove clusters with too few cells
 #' @param method whether to take mean (default), median, 10% truncated mean, or trimean,
-#' max, min
+#' max, min, sum
 #' @param output_log whether to report log results
 #' @param cut_n set on a limit of genes as expressed, lower ranked genes
 #' are set to 0, considered unexpressed
@@ -190,6 +190,22 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
         mat_data <- mat[cell_ids, , drop = FALSE]
       }
       res <- Matrix::colMeans(mat_data, na.rm = TRUE)
+      if (output_log) {
+        res <- log1p(res)
+      }
+      res
+    })
+  } else if (method == "sum") {
+    out <- lapply(cluster_ids, function(cell_ids) {
+      if (!all(cell_ids %in% colnames(mat))) {
+        stop("cell ids not found in input matrix", call. = FALSE)
+      }
+      if (if_log) {
+        mat_data <- expm1(mat[cell_ids, , drop = FALSE])
+      } else {
+        mat_data <- mat[cell_ids, , drop = FALSE]
+      }
+      res <- Matrix::colSums(mat_data, na.rm = TRUE)
       if (output_log) {
         res <- log1p(res)
       }
@@ -329,7 +345,7 @@ get_labs <- function(g, ggbuild = NULL) {
   } else {
     g2 <- ggbuild
   }
-  
+
   nlayer <- length(g2$plot$scales$scales)
   for (x in 1:nlayer) {
     ls <- g2$plot$scales$scales[[x]]$get_labels()
@@ -339,10 +355,10 @@ get_labs <- function(g, ggbuild = NULL) {
   }
 }
 
-check_colour_mapping <- function(g, 
+check_colour_mapping <- function(g,
                                  col = "colour",
-                                 return_col = FALSE, 
-                                 autoswitch = TRUE, 
+                                 return_col = FALSE,
+                                 autoswitch = TRUE,
                                  layer = 1,
                                  ggbuild = NULL) {
   if (is.null(ggbuild)) {
@@ -408,7 +424,6 @@ calc_distance <- function(
 }
 
 #' Average expression values per cluster
-#'
 #' @param mat expression matrix
 #' @param metadata data.frame or vector containing cluster assignments per cell.
 #' Order must match column order in supplied matrix. If a data.frame
@@ -418,7 +433,7 @@ calc_distance <- function(
 #' @param cluster_col column in metadata with cluster number
 #' @param cell_col if provided, will reorder matrix first
 #' @param low_threshold option to remove clusters with too few cells
-#' @param method whether to take mean (default), median, 10% truncated mean, or trimean, max, min
+#' @param method whether to take mean (default), median, 10% truncated mean, or trimean, max, min, sum
 #' @param output_log whether to report log results
 #' @param cut_n set on a limit of genes as expressed, lower ranked genes
 #' are set to 0, considered unexpressed
@@ -491,6 +506,27 @@ average_clusters <- function(mat,
           mat_data <- mat[, cell_ids, drop = FALSE]
         }
         res <- Matrix::rowMeans(mat_data, na.rm = TRUE)
+        if (output_log) {
+          res <- log1p(res)
+        }
+        res
+      }
+    )
+  } else if (method == "sum") {
+    out <- lapply(
+      cluster_ids,
+      function(cell_ids) {
+        if (!all(cell_ids %in% colnames(mat))) {
+          stop("cell ids not found in input matrix",
+            call. = FALSE
+          )
+        }
+        if (if_log) {
+          mat_data <- expm1(mat[, cell_ids, drop = FALSE])
+        } else {
+          mat_data <- mat[, cell_ids, drop = FALSE]
+        }
+        res <- Matrix::rowSums(mat_data, na.rm = TRUE)
         if (output_log) {
           res <- log1p(res)
         }
@@ -651,13 +687,13 @@ average_clusters <- function(mat,
 #' g <- label_repel(ggplot2::ggplot(mtcars, ggplot2::aes(x = hp, y = wt, color = as.character(cyl))) +
 #'   ggplot2::geom_point(), remove_current = FALSE)
 #' @export
-label_repel <- function(g, 
+label_repel <- function(g,
                         group_col = "auto",
-                        x = "x", 
+                        x = "x",
                         y = "y",
-                        txt_pt = 3, 
-                        remove_current = "auto", 
-                        layer = "auto", 
+                        txt_pt = 3,
+                        remove_current = "auto",
+                        layer = "auto",
                         ggbuild = NULL,
                         ...) {
   g_orig <- g
@@ -768,7 +804,7 @@ prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, s
   } else {
     g <- ggbuild
   }
-  
+
   em <- dplyr::select(g$data[[1]], c(x, y))
   clust <- g$data[[1]]$group
   if (nrow(em) > downsample) {

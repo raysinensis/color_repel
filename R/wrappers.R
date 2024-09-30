@@ -72,9 +72,11 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   }
 
   if (encircle) {
-    dat <- prep_encircle(g, threshold = encircle_threshold, 
-                         nmin = encircle_nmin, downsample = downsample, seed = seed,
-                         ggbuild = ggbuild)
+    dat <- prep_encircle(g,
+      threshold = encircle_threshold,
+      nmin = encircle_nmin, downsample = downsample, seed = seed,
+      ggbuild = ggbuild
+    )
     g <- g + ggalt::geom_encircle(
       data = dat,
       ggplot2::aes(x = x, y = y, fill = group),

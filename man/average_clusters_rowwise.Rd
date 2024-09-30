@@ -35,7 +35,7 @@ averaging will be done on unlogged data}
 \item{low_threshold}{option to remove clusters with too few cells}
 
 \item{method}{whether to take mean (default), median, 10\% truncated mean, or trimean,
-max, min}
+max, min, sum}
 
 \item{output_log}{whether to report log results}
 

@@ -49,7 +49,7 @@ color_repel <- function(g,
   } else {
     g2 <- ggbuild
   }
-  
+
   if (length(cols) <= 1) {
     warning("Did not detect multiple colors, did you specify the correct mapping? Trying to autoswitch...")
   }
@@ -108,9 +108,11 @@ color_repel <- function(g,
       message("extract plot distances (part 2)...")
     }
     rownames(cdist) <- as.character(1:nrow(cdist))
-    cdist <- suppressMessages(average_clusters_rowwise(cdist, metadata = clust, 
-                                                       if_log = FALSE, method = "min", 
-                                                       output_log = FALSE, trim = TRUE))
+    cdist <- suppressMessages(average_clusters_rowwise(cdist,
+      metadata = clust,
+      if_log = FALSE, method = "min",
+      output_log = FALSE, trim = TRUE
+    ))
     ord <- gtools::mixedorder(colnames(cdist))
     cdist <- cdist[ord, ord]
     cdist[cdist < max(cdist) / 100] <- max(cdist) / 100

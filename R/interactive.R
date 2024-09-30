@@ -32,7 +32,7 @@ ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encir
   } else {
     c <- ggbuild
   }
-  
+
   xmin <- min(c$data[[1]]$x)
   xmax <- max(c$data[[1]]$x)
   ymin <- min(c$data[[1]]$y)
