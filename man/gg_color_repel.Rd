@@ -24,6 +24,7 @@ gg_color_repel(
   encircle_shape = 0.5,
   encircle_threshold = 0.01,
   encircle_nmin = 0.01,
+  ggbuild = NULL,
   ...
 )
 }
@@ -65,6 +66,8 @@ gg_color_repel(
 \item{encircle_threshold}{threshold for removing outliers}
 
 \item{encircle_nmin}{number of near neighbors for removing outliers}
+
+\item{ggbuild}{already built ggplot_built object if available}
 
 \item{...}{passed to repel_label}
 }

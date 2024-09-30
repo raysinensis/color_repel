@@ -4,10 +4,12 @@
 \alias{get_labs}
 \title{Extract custom labels from ggplot object}
 \usage{
-get_labs(g)
+get_labs(g, ggbuild = NULL)
 }
 \arguments{
 \item{g}{ggplot object}
+
+\item{ggbuild}{already built ggplot_built object if available}
 }
 \value{
 named vector of labels

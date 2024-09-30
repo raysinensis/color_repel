@@ -18,6 +18,7 @@
 #' @param encircle_shape shape/smoothing argument passed to geom_encircle
 #' @param encircle_threshold threshold for removing outliers
 #' @param encircle_nmin number of near neighbors for removing outliers
+#' @param ggbuild already built ggplot_built object if available
 #' @param ... passed to repel_label
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -44,6 +45,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            encircle_shape = 0.5,
                            encircle_threshold = 0.01,
                            encircle_nmin = 0.01,
+                           ggbuild = NULL,
                            ...) {
   newcols <- color_repel(g,
     col = col, verbose = verbose,
@@ -52,7 +54,8 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     sim = sim, severity = severity,
     autoswitch = autoswitch, layer = layer,
     out_orig = out_orig,
-    out_worst = out_worst
+    out_worst = out_worst,
+    ggbuild = ggbuild
   )
 
   if (autoswitch) {
@@ -69,7 +72,11 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   }
 
   if (encircle) {
-    dat <- prep_encircle(g, threshold = encircle_threshold, nmin = encircle_nmin, downsample = downsample, seed = seed)
+    dat <- prep_encircle(g,
+      threshold = encircle_threshold,
+      nmin = encircle_nmin, downsample = downsample, seed = seed,
+      ggbuild = ggbuild
+    )
     g <- g + ggalt::geom_encircle(
       data = dat,
       ggplot2::aes(x = x, y = y, fill = group),
@@ -82,7 +89,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
   }
 
   if (repel_label) {
-    g <- label_repel(g, ...)
+    g <- label_repel(g, ggbuild = ggbuild, ...)
   }
 
   g

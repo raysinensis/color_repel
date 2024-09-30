@@ -1,3 +1,7 @@
+# Changes in version 0.3.1 (2024-10-01)
+* Improve speed by avoiding rebuilding ggplot objects through various steps
+* More matrix math by cluster/group support
+
 # Changes in version 0.3.0 (2024-09-29)
 * Option to use chull to simplify optimization
 * Better more flexible layer handling

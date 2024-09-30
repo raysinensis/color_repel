@@ -12,6 +12,7 @@ label_repel(
   txt_pt = 3,
   remove_current = "auto",
   layer = "auto",
+  ggbuild = NULL,
   ...
 )
 }
@@ -29,6 +30,8 @@ label_repel(
 \item{remove_current}{whether to remove current text}
 
 \item{layer}{text layer to remove, defaults to last}
+
+\item{ggbuild}{already built ggplot_built object if available}
 
 \item{...}{arguments passed to geom_text_repel}
 }
