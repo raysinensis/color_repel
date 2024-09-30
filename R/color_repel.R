@@ -13,6 +13,7 @@
 #' @param layer layer to detect color, defaults to first
 #' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
+#' @param ggbuild already built ggplot_built object if available
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
 #'   ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
@@ -33,17 +34,22 @@ color_repel <- function(g,
                         autoswitch = TRUE,
                         layer = 1,
                         out_orig = FALSE,
-                        out_worst = FALSE) {
+                        out_worst = FALSE,
+                        ggbuild = NULL) {
   g <- check_patchwork(g)
 
   if (verbose) {
     message("extract original colors...")
   }
-  temp <- check_colour_mapping(g, col = col, return_col = TRUE, autoswitch = autoswitch, layer = layer)
+  temp <- check_colour_mapping(g, col = col, return_col = TRUE, autoswitch = autoswitch, layer = layer, ggbuild = ggbuild)
   col <- temp[["col"]]
   cols <- temp[["cols"]]
-  g2 <- ggplot2::ggplot_build(g)
-
+  if (is.null(ggbuild)) {
+    g2 <- ggplot2::ggplot_build(g)
+  } else {
+    g2 <- ggbuild
+  }
+  
   if (length(cols) <= 1) {
     warning("Did not detect multiple colors, did you specify the correct mapping? Trying to autoswitch...")
   }

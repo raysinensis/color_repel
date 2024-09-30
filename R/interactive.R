@@ -11,6 +11,7 @@
 #' @param background_alpha alpha value of background image
 #' @param use_cairo whether to use cairo for saving plots, maybe needed for certain ggplot extensions
 #' @param label_lim whether to limit labels to avoid edge fraction
+#' @param ggbuild already built ggplot_built object if available
 #' @param ... arguments passed to gg_color_repel
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -23,9 +24,15 @@ ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encir
                                 width = 5, height = 5,
                                 filename = "temp.png", draw_box = NULL,
                                 background = NULL, background_alpha = 1, use_cairo = FALSE, label_lim = 0.05,
+                                ggbuild = NULL,
                                 ...) {
   a <- g
-  c <- ggplot2::ggplot_build(a)
+  if (is.null(ggbuild)) {
+    c <- ggplot2::ggplot_build(a)
+  } else {
+    c <- ggbuild
+  }
+  
   xmin <- min(c$data[[1]]$x)
   xmax <- max(c$data[[1]]$x)
   ymin <- min(c$data[[1]]$y)

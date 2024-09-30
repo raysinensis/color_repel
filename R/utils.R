@@ -315,6 +315,7 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
 
 #' Extract custom labels from ggplot object
 #' @param g ggplot object
+#' @param ggbuild already built ggplot_built object if available
 #' @return named vector of labels
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -322,8 +323,13 @@ average_clusters_rowwise <- function(mat, metadata, cluster_col = "cluster", if_
 #'   ggplot2::geom_text(ggplot2::aes(label = model))
 #' get_labs(a)
 #' @export
-get_labs <- function(g) {
-  g2 <- ggplot2::ggplot_build(g)
+get_labs <- function(g, ggbuild = NULL) {
+  if (is.null(ggbuild)) {
+    g2 <- ggplot2::ggplot_build(g)
+  } else {
+    g2 <- ggbuild
+  }
+  
   nlayer <- length(g2$plot$scales$scales)
   for (x in 1:nlayer) {
     ls <- g2$plot$scales$scales[[x]]$get_labels()
@@ -333,8 +339,18 @@ get_labs <- function(g) {
   }
 }
 
-check_colour_mapping <- function(g, col = "colour", return_col = FALSE, autoswitch = TRUE, layer = 1) {
-  g2 <- ggplot2::ggplot_build(g)
+check_colour_mapping <- function(g, 
+                                 col = "colour",
+                                 return_col = FALSE, 
+                                 autoswitch = TRUE, 
+                                 layer = 1,
+                                 ggbuild = NULL) {
+  if (is.null(ggbuild)) {
+    g2 <- ggplot2::ggplot_build(g)
+  } else {
+    g2 <- ggbuild
+  }
+
   cols <- dplyr::arrange(g2$data[[layer]], group)
   cols <- unique(cols[[col]])
   if (length(cols) <= 1) {
@@ -628,19 +644,31 @@ average_clusters <- function(mat,
 #' @param txt_pt text size
 #' @param remove_current whether to remove current text
 #' @param layer text layer to remove, defaults to last
+#' @param ggbuild already built ggplot_built object if available
 #' @param ... arguments passed to geom_text_repel
 #' @return function, if data.frame input, or new ggplot object
 #' @examples
 #' g <- label_repel(ggplot2::ggplot(mtcars, ggplot2::aes(x = hp, y = wt, color = as.character(cyl))) +
 #'   ggplot2::geom_point(), remove_current = FALSE)
 #' @export
-label_repel <- function(g, group_col = "auto", x = "x", y = "y",
-                        txt_pt = 3, remove_current = "auto", layer = "auto", ...) {
+label_repel <- function(g, 
+                        group_col = "auto",
+                        x = "x", 
+                        y = "y",
+                        txt_pt = 3, 
+                        remove_current = "auto", 
+                        layer = "auto", 
+                        ggbuild = NULL,
+                        ...) {
   g_orig <- g
   if (is.data.frame(g)) {
     so_df <- g
   } else {
-    g2 <- ggplot2::ggplot_build(g)
+    if (is.null(ggbuild)) {
+      g2 <- ggplot2::ggplot_build(g)
+    } else {
+      g2 <- ggbuild
+    }
     if (layer == "auto") {
       layer <- length(g2$data)
     }
@@ -654,7 +682,7 @@ label_repel <- function(g, group_col = "auto", x = "x", y = "y",
     }
   }
   if (is.numeric(so_df[[group_col]])) {
-    temp_group <- get_labs(g)
+    temp_group <- get_labs(g, ggbuild = g2)
     so_df[[group_col]] <- factor(so_df[[group_col]], labels = temp_group)
   }
   centers <- dplyr::group_by(so_df, !!dplyr::sym(group_col))
@@ -733,9 +761,14 @@ remove_current_labels <- function(g, layer = "auto") {
   g
 }
 
-prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42) {
+prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42, ggbuild = NULL) {
   g <- check_patchwork(g)
-  g <- ggplot2::ggplot_build(g)
+  if (is.null(ggbuild)) {
+    g <- ggplot2::ggplot_build(g)
+  } else {
+    g <- ggbuild
+  }
+  
   em <- dplyr::select(g$data[[1]], c(x, y))
   clust <- g$data[[1]]$group
   if (nrow(em) > downsample) {

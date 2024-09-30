@@ -18,7 +18,8 @@ color_repel(
   autoswitch = TRUE,
   layer = 1,
   out_orig = FALSE,
-  out_worst = FALSE
+  out_worst = FALSE,
+  ggbuild = NULL
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ color_repel(
 \item{out_orig}{output the original colors as named vector}
 
 \item{out_worst}{output the worst combination instead of best}
+
+\item{ggbuild}{already built ggplot_built object if available}
 }
 \value{
 vector of reordered colors
