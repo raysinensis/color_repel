@@ -438,6 +438,13 @@ calc_distance <- function(
 #' @param cut_n set on a limit of genes as expressed, lower ranked genes
 #' are set to 0, considered unexpressed
 #' @return average or other desired calculation by group/cluster matrix
+#' @examples
+#' mat <- average_clusters(data.frame(
+#'   z = c(1, 2, 3, 4, 5, 6),
+#'   y = c(1, 2, 3, 4, 5, 6),
+#'   x = c(1, 2, 3, 4, 5, 6)
+#' ), metadata = c(1, 1, 2), method = "sum")
+#' @export
 average_clusters <- function(mat,
                              metadata,
                              cluster_col = "cluster",
