@@ -125,11 +125,11 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", wi
     images = list(
       source = plotly::raster2uri(grDevices::as.raster(png::readPNG(filename))),
       opacity = alpha,
-      x = xmin, y = ymin,
+      x = (xmax + xmin)/2, y = (ymax + ymin)/2,
       sizex = xmax - xmin, sizey = ymax - ymin,
       xref = "x1", yref = "y1",
       sizing = "stretch",
-      xanchor = "left", yanchor = "bottom", layer = "below"
+      xanchor = "center", yanchor = "middle", layer = "below"
     ),
     showlegend = FALSE
   )
