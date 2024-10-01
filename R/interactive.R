@@ -114,7 +114,7 @@ crop_background <- function(filename = "temp.png") {
   return(filename)
 }
 
-ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5, alpha = 1) {
+ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", width = 5, height = 5, alpha = 1, legend = FALSE) {
   p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
   p <- plotly::layout(p,
     autosize = F,
@@ -131,7 +131,7 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png", wi
       sizing = "stretch",
       xanchor = "center", yanchor = "middle", layer = "below"
     ),
-    showlegend = FALSE
+    showlegend = legend
   )
   p <- plotly::config(p, displayModeBar = F)
   p
