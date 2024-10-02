@@ -18,6 +18,8 @@ ggplotly_background(
   use_cairo = FALSE,
   label_lim = 0.05,
   ggbuild = NULL,
+  crop = TRUE,
+  size_nudge = 0,
   ...
 )
 }
@@ -47,6 +49,10 @@ ggplotly_background(
 \item{label_lim}{whether to limit labels to avoid edge fraction}
 
 \item{ggbuild}{already built ggplot_built object if available}
+
+\item{crop}{whether to call cropping of the background image to remove whitespace}
+
+\item{size_nudge}{slight image size adjustment, default to none}
 
 \item{...}{arguments passed to gg_color_repel}
 }
