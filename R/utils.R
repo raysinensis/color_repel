@@ -820,9 +820,9 @@ prep_mascarade <- function(g, ggbuild, labs) {
   )
 
   if (!is.null(labs)) {
-    dict <- data.frame(cluster = sort(unique(dat$cluster)), lab = labs)
-    dat <- dplyr::select(dplyr::left_join(dat, dict, by = "cluster"), x, y, lab)
-    dat <- dplyr::rename(dat, "group" = "lab")
+    dict <- data.frame(cluster = sort(unique(dat$cluster)), labs = labs)
+    dat <- dplyr::select(dplyr::left_join(dat, dict, by = "cluster"), x, y, labs)
+    dat <- dplyr::rename(dat, "group" = "labs")
   }
   dat
 }
