@@ -18,6 +18,7 @@
 #' @param encircle_shape shape/smoothing argument passed to geom_encircle
 #' @param encircle_threshold threshold for removing outliers
 #' @param encircle_nmin number of near neighbors for removing outliers
+#' @param mascarade use mascarade package to outline clusters
 #' @param ggbuild already built ggplot_built object if available
 #' @param ... passed to repel_label
 #' @examples
@@ -45,6 +46,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
                            encircle_shape = 0.5,
                            encircle_threshold = 0.01,
                            encircle_nmin = 0.01,
+                           mascarade = FALSE,
                            ggbuild = NULL,
                            ...) {
   newcols <- color_repel(g,
@@ -88,6 +90,11 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     g <- suppressMessages(g + do.call(eval(parse(text = "ggplot2:::scale_fill_manual")), c(values = list(newcols))))
   }
 
+  if (mascarade) {
+    dat <- prep_mascarade(g, ggbuild = ggbuild, labs = labs)
+    g <- g + ggplot2::geom_path(data = dat, ggplot2::aes(x = x, y = y, color = group), alpha = 0.5)
+  }
+  
   if (repel_label) {
     g <- label_repel(g, ggbuild = ggbuild, ...)
   }

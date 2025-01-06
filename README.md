@@ -57,17 +57,22 @@ cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow 
 a <- Seurat::DimPlot(so, group.by = "type", pt.size = 0.5)
 b <- gg_color_repel(a, repel_label = T)
 c <- gg_color_repel(a, encircle = T)
-cowplot::plot_grid(b, c,
-                   labels = c("label_repel", "encircle"))
+d <- gg_color_repel(a, mascarade = T)
+cowplot::plot_grid(b, c, d, 
+  labels = c("label_repel", "encircle", "mascarade"),
+  nrow = 1
+)
 ```
 
-<img align="center" width="700" height="300" src="inst/scRNAseqUMAP_extra.png">
+<img align="center" width="1000" height="300" src="inst/scRNAseqUMAP_extra.png">
 
 ---------------
 
 Also see it in action here: https://raysinensis.shinyapps.io/spatialshiny_adr/
 
 <img width="350" height="285" src="inst/adr1.png">  -->  <img width="350" height="285" src="inst/adr2.png">
+
+For layering non-interactive annotations and interactive points, see example: https://raysinensis.github.io/color_repel/
 
 ### Citation
 
