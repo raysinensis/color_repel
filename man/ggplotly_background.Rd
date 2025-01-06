@@ -9,6 +9,7 @@ ggplotly_background(
   repel_color = TRUE,
   repel_label = TRUE,
   encircle = FALSE,
+  mascarade = FALSE,
   width = 5,
   height = 5,
   filename = "temp.png",
@@ -31,6 +32,8 @@ ggplotly_background(
 \item{repel_label}{whether to add centroid labels with ggrepel}
 
 \item{encircle}{whether to draw geom_encircle by cluster}
+
+\item{mascarade}{use mascarade package to outline clusters}
 
 \item{width}{plot width}
 
