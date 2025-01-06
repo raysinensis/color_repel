@@ -94,7 +94,7 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     dat <- prep_mascarade(g, ggbuild = ggbuild, labs = labs)
     g <- g + ggplot2::geom_path(data = dat, ggplot2::aes(x = x, y = y, color = group), alpha = 0.5)
   }
-  
+
   if (repel_label) {
     g <- label_repel(g, ggbuild = ggbuild, ...)
   }
