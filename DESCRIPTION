@@ -30,7 +30,8 @@ Imports:
     ggalt,
     plotly,
     knitr,
-    png
+    png,
+    Polychrome
 Suggests:
     colorspace,
     mascarade

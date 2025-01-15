@@ -1,3 +1,6 @@
+# Changes in version 0.4.1 (2025-01-15)
+* Support recoloring with Polychome package
+
 # Changes in version 0.4.0 (2025-01-06)
 * Support for mascarade package
 * Added example layering plotly interactive layer and noninteractive background layers
