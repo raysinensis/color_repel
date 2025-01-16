@@ -49,8 +49,8 @@ ggplotly_background <- function(g, repel_color = TRUE,
 
   if (mascarade) {
     labs <- get_labs(g)
-    dat <- prep_mascarade(g, ggbuild = ggbuild, labs = labs)
-    b2 <- b + ggplot2::geom_path(data = dat, ggplot2::aes(x = x, y = y, color = group), alpha = 0.5)
+    # dat <- prep_mascarade(g, ggbuild = ggbuild, labs = labs)
+    # b2 <- b + ggplot2::geom_path(data = dat, ggplot2::aes(x = x, y = y, color = group), alpha = 0.5)
   } else {
     b2 <- b
   }

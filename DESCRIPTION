@@ -1,6 +1,6 @@
 Package: colorrepel
 Title: Repel Visually Similar Colors for Colorblind Users in Various Plots
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: 
     person(given = "Rui",
            family = "Fu",
@@ -34,7 +34,6 @@ Imports:
     png,
     Polychrome
 Suggests:
-    colorspace,
-    mascarade
+    colorspace
 URL: https://github.com/raysinensis/color_repel
 ByteCompile: true

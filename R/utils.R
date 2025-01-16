@@ -824,10 +824,10 @@ prep_mascarade <- function(g, ggbuild, labs) {
   em <- dplyr::select(g$data[[1]], c(x, y))
   clust <- g$data[[1]]$group
 
-  dat <- mascarade::generateMask(
-    dims = em,
-    clusters = clust
-  )
+  # dat <- mascarade::generateMask(
+  #   dims = em,
+  #   clusters = clust
+  # )
 
   if (!is.null(labs)) {
     dict <- data.frame(cluster = sort(unique(dat$cluster)), labs = labs)
