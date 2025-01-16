@@ -12,6 +12,7 @@ gg_color_repel(
   verbose = FALSE,
   downsample = 5000,
   nsamp = 50000,
+  polychrome_recolor = FALSE,
   seed = 34,
   autoswitch = TRUE,
   layer = 1,
@@ -24,6 +25,7 @@ gg_color_repel(
   encircle_shape = 0.5,
   encircle_threshold = 0.01,
   encircle_nmin = 0.01,
+  mascarade = FALSE,
   ggbuild = NULL,
   ...
 )
@@ -42,6 +44,8 @@ gg_color_repel(
 \item{downsample}{downsample when too many datapoints are present}
 
 \item{nsamp}{how many random sampling color combinations to test, default 50000}
+
+\item{polychrome_recolor}{whether to replace the original colors with polychrome creation}
 
 \item{seed}{sampling randomization seed}
 
@@ -66,6 +70,8 @@ gg_color_repel(
 \item{encircle_threshold}{threshold for removing outliers}
 
 \item{encircle_nmin}{number of near neighbors for removing outliers}
+
+\item{mascarade}{use mascarade package to outline clusters}
 
 \item{ggbuild}{already built ggplot_built object if available}
 

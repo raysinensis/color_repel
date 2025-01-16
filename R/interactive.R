@@ -3,6 +3,7 @@
 #' @param repel_color whether to rearrange colors
 #' @param repel_label whether to add centroid labels with ggrepel
 #' @param encircle whether to draw geom_encircle by cluster
+#' @param mascarade use mascarade package to outline clusters
 #' @param width plot width
 #' @param height plot height
 #' @param filename temp file location for saving image
@@ -22,7 +23,8 @@
 #' b <- ggplotly_background(a, filename = NULL)
 #' @return plotly object with background image of layers unsupported by plotly
 #' @export
-ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encircle = FALSE,
+ggplotly_background <- function(g, repel_color = TRUE,
+                                repel_label = TRUE, encircle = FALSE, mascarade = FALSE,
                                 width = 5, height = 5,
                                 filename = "temp.png", draw_box = NULL,
                                 background = NULL, background_alpha = 1, use_cairo = FALSE, label_lim = 0.05,
@@ -45,25 +47,41 @@ ggplotly_background <- function(g, repel_color = TRUE, repel_label = TRUE, encir
     ...
   )
 
+  if (mascarade) {
+    labs <- get_labs(g)
+    # dat <- prep_mascarade(g, ggbuild = ggbuild, labs = labs)
+    # b2 <- b + ggplot2::geom_path(data = dat, ggplot2::aes(x = x, y = y, color = group), alpha = 0.5)
+  } else {
+    b2 <- b
+  }
+
   if ((is.null(filename))) {
     return(plotly::ggplotly(a))
   }
   if (is.null((background))) {
-    tempbg <- save_background(prep_background(remove_geom(b), 
-                                              xmin, xmax, ymin, ymax, draw_box),
-                              filename = filename, use_cairo = use_cairo)
+    tempbg <- save_background(
+      prep_background(
+        remove_geom(b2),
+        xmin, xmax, ymin, ymax, draw_box
+      ),
+      filename = filename, use_cairo = use_cairo
+    )
     if (crop) {
       tempbg <- crop_background(tempbg)
     }
   } else {
     if (!("character" %in% class(background))) {
-      tempbg <- save_background(prep_background(background, 
-                                                expand_lims(xmin, xmax, label_lim)[1],
-                                                expand_lims(xmin, xmax, label_lim)[2],
-                                                expand_lims(ymin, ymax, label_lim)[1],
-                                                expand_lims(ymin, ymax, label_lim)[2],
-                                                draw_box),
-                                filename = filename, use_cairo = use_cairo)
+      tempbg <- save_background(
+        prep_background(
+          background,
+          expand_lims(xmin, xmax, label_lim)[1],
+          expand_lims(xmin, xmax, label_lim)[2],
+          expand_lims(ymin, ymax, label_lim)[1],
+          expand_lims(ymin, ymax, label_lim)[2],
+          draw_box
+        ),
+        filename = filename, use_cairo = use_cairo
+      )
       if (crop) {
         tempbg <- crop_background(tempbg)
       }
@@ -133,7 +151,7 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png",
   xmax <- expand_lims(xmin, xmax, size_nudge)[2]
   ymin <- expand_lims(ymin, ymax, size_nudge)[1]
   ymax <- expand_lims(ymin, ymax, size_nudge)[2]
-  
+
   p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
   p <- plotly::layout(p,
     autosize = F,
@@ -144,7 +162,7 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png",
     images = list(
       source = plotly::raster2uri(grDevices::as.raster(png::readPNG(filename))),
       opacity = alpha,
-      x = (xmax + xmin)/2, y = (ymax + ymin)/2,
+      x = (xmax + xmin) / 2, y = (ymax + ymin) / 2,
       sizex = xmax - xmin, sizey = ymax - ymin,
       xref = "x1", yref = "y1",
       sizing = "stretch",

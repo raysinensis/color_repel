@@ -1,3 +1,11 @@
+# Changes in version 0.4.1 (2025-01-15)
+* Support recoloring with Polychrome package
+* Fixed recoloring internal logic to be more flexible
+
+# Changes in version 0.4.0 (2025-01-06)
+* Support for mascarade package
+* Added example layering plotly interactive layer and noninteractive background layers
+
 # Changes in version 0.3.1 (2024-10-01)
 * Improve speed by avoiding rebuilding ggplot objects through various steps
 * More matrix math by cluster/group support

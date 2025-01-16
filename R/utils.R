@@ -1,3 +1,13 @@
+create_polychrome <- function(n) {
+  set.seed(5)
+  coln <- Polychrome::createPalette(n, c("#FF0000", "#00FF00", "#0000FF"), range = c(30, 80))
+  coln <- Polychrome::sortByHue(coln)
+  # coln <- as.vector(t(matrix(coln, ncol=4)))
+  names(coln) <- NULL
+  coln
+}
+
+
 #' Score matrix distances
 #' @param dist1 distanct matrix 1
 #' @param dist2 distanct matrix 2
@@ -802,6 +812,29 @@ remove_current_labels <- function(g, layer = "auto") {
   }
   g[["layers"]][[layer]] <- NULL
   g
+}
+
+prep_mascarade <- function(g, ggbuild, labs) {
+  if (is.null(ggbuild)) {
+    g <- ggplot2::ggplot_build(g)
+  } else {
+    g <- ggbuild
+  }
+
+  em <- dplyr::select(g$data[[1]], c(x, y))
+  clust <- g$data[[1]]$group
+
+  # dat <- mascarade::generateMask(
+  #   dims = em,
+  #   clusters = clust
+  # )
+
+  if (!is.null(labs)) {
+    dict <- data.frame(cluster = sort(unique(dat$cluster)), labs = labs)
+    dat <- dplyr::select(dplyr::left_join(dat, dict, by = "cluster"), x, y, labs)
+    dat <- dplyr::rename(dat, "group" = "labs")
+  }
+  dat
 }
 
 prep_encircle <- function(g, threshold = 0.01, nmin = 0.01, downsample = 5000, seed = 42, ggbuild = NULL) {
