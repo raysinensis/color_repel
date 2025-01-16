@@ -12,6 +12,7 @@ gg_color_repel(
   verbose = FALSE,
   downsample = 5000,
   nsamp = 50000,
+  polychrome_recolor = FALSE,
   seed = 34,
   autoswitch = TRUE,
   layer = 1,
@@ -43,6 +44,8 @@ gg_color_repel(
 \item{downsample}{downsample when too many datapoints are present}
 
 \item{nsamp}{how many random sampling color combinations to test, default 50000}
+
+\item{polychrome_recolor}{whether to replace the original colors with polychrome creation}
 
 \item{seed}{sampling randomization seed}
 

@@ -1,5 +1,6 @@
 # Changes in version 0.4.1 (2025-01-15)
-* Support recoloring with Polychome package
+* Support recoloring with Polychrome package
+* Fixed recoloring internal logic to be more flexible
 
 # Changes in version 0.4.0 (2025-01-06)
 * Support for mascarade package

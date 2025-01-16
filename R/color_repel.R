@@ -3,6 +3,7 @@
 #' @param coord coordinates, default is inferred
 #' @param groups groups corresponding to color/fill, default is inferred
 #' @param nsamp how many random sampling color combinations to test, default 50000
+#' @param polychrome_recolor whether to replace the original colors with polychrome creation
 #' @param sim passing a colorbind simulation function if needed
 #' @param severity severity of the color vision defect, between 0 and 1
 #' @param verbose whether to print messages
@@ -29,6 +30,7 @@ color_repel <- function(g,
                         severity = 0.5,
                         verbose = FALSE,
                         downsample = 5000,
+                        polychrome_recolor = FALSE,
                         seed = 34,
                         col = "colour",
                         autoswitch = TRUE,
@@ -56,7 +58,14 @@ color_repel <- function(g,
   if (verbose) {
     message(cols)
   }
+  
   orig_cols <- cols
+  
+  if (polychrome_recolor) {
+    cols <- create_polychrome(length(cols))
+    orig_cols2 <- cols
+  }
+  
   if (out_orig) {
     temp <- orig_cols
     names(temp) <- sort(unique(g$data[[ggplot2::as_label(g$mapping[[col]])]]))
@@ -89,6 +98,9 @@ color_repel <- function(g,
     # clustering info
     clust <- as.character(g2$data[[layer]][[col]])
     clust <- as.character(as.numeric(factor(clust, levels = orig_cols)))
+    if (polychrome_recolor) {
+      clust <- plyr::mapvalues(clust, from = orig_cols, to = orig_cols2)
+    }
     if (downsample == "chull") {
       res <- by_cluster_chull(em, clust, xcol = "x", ycol = "y")
       em <- res[[1]]
@@ -128,7 +140,12 @@ color_repel <- function(g,
     message("iterate color combinations...")
   }
   res <- matrix2_score_n(1 / cdist, 1 / coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
-  temp <- orig_cols[res]
+  
+  if (polychrome_recolor) {
+    temp <- orig_cols2[res]
+  } else {
+    temp <- orig_cols[res]
+  }
   names(temp) <- sort(unique(g$data[[ggplot2::as_label(g$mapping[[col]])]]))
   temp
 }

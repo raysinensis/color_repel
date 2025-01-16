@@ -13,6 +13,7 @@ color_repel(
   severity = 0.5,
   verbose = FALSE,
   downsample = 5000,
+  polychrome_recolor = FALSE,
   seed = 34,
   col = "colour",
   autoswitch = TRUE,
@@ -38,6 +39,8 @@ color_repel(
 \item{verbose}{whether to print messages}
 
 \item{downsample}{downsample when too many datapoints are present, or use chull}
+
+\item{polychrome_recolor}{whether to replace the original colors with polychrome creation}
 
 \item{seed}{sampling randomization seed}
 

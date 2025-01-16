@@ -24,6 +24,7 @@ Imports:
     gtools,
     purrr,
     dplyr,
+    plyr,
     stringr,
     ggplot2,
     ggrepel,
