@@ -58,14 +58,14 @@ color_repel <- function(g,
   if (verbose) {
     message(cols)
   }
-  
+
   orig_cols <- cols
-  
+
   if (polychrome_recolor) {
     cols <- create_polychrome(length(cols))
     orig_cols2 <- cols
   }
-  
+
   if (out_orig) {
     temp <- orig_cols
     names(temp) <- sort(unique(g$data[[ggplot2::as_label(g$mapping[[col]])]]))
@@ -140,7 +140,7 @@ color_repel <- function(g,
     message("iterate color combinations...")
   }
   res <- matrix2_score_n(1 / cdist, 1 / coldist, n = nsamp, verbose = verbose, seed = seed, out_worst = out_worst)
-  
+
   if (polychrome_recolor) {
     temp <- orig_cols2[res]
   } else {

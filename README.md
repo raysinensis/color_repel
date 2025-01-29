@@ -44,11 +44,11 @@ cowplot::plot_grid(a, b,
 
 ```
 a <- readRDS("bar_gg.rds")
-b <- a + scale_fill_viridis_d(option = "H")
-c <- b + scale_fill_manual(values = color_repel(b, col = "fill"))
-# or use wrapper
-c <- gg_color_repel(b, col = "fill")
-cowplot::plot_grid(a,b,c, labels = c("default", "viridis", "color_repel"), nrow = 1)
+# `color_repel` reorders colors
+b <- a + scale_fill_manual(values = color_repel(a, col = "fill"))
+# or use wrapper, with option to recolor with `polychrome`- better suited for 20+ colors
+c <- gg_color_repel(a, sim = colorspace::deutan, polychrome_recolor = TRUE)
+cowplot::plot_grid(a, b, c, labels = c("default", "color_repel", "polychrome"), nrow = 1)
 ```
 
 <img align="center" width="900" height="200" src="inst/stackbar_example.png">
