@@ -1,3 +1,6 @@
+# Changes in version 0.4.2 (2025-04-15)
+* Expose tooltip argument for ggplotly
+
 # Changes in version 0.4.1 (2025-01-15)
 * Support recoloring with Polychrome package
 * Fixed recoloring internal logic to be more flexible
