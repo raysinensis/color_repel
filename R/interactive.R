@@ -15,6 +15,7 @@
 #' @param ggbuild already built ggplot_built object if available
 #' @param crop whether to call cropping of the background image to remove whitespace
 #' @param size_nudge slight image size adjustment, default to none
+#' @param tooltip tooltip vector for ggplotly
 #' @param ... arguments passed to gg_color_repel
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -28,7 +29,7 @@ ggplotly_background <- function(g, repel_color = TRUE,
                                 width = 5, height = 5,
                                 filename = "temp.png", draw_box = NULL,
                                 background = NULL, background_alpha = 1, use_cairo = FALSE, label_lim = 0.05,
-                                ggbuild = NULL, crop = TRUE, size_nudge = 0,
+                                ggbuild = NULL, crop = TRUE, size_nudge = 0, tooltip = NULL,
                                 ...) {
   a <- g
   if (is.null(ggbuild)) {
@@ -88,9 +89,10 @@ ggplotly_background <- function(g, repel_color = TRUE,
     } else {
       tempbg <- background
     }
+    
   }
 
-  ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg, alpha = background_alpha, size_nudge = size_nudge)
+  ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg, alpha = background_alpha, size_nudge = size_nudge, tooltip)
 }
 
 remove_geom <- function(g, layer = 1) {
@@ -146,13 +148,18 @@ crop_background <- function(filename = "temp.png") {
 
 ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png",
                             width = 5, height = 5, alpha = 1, legend = FALSE,
-                            size_nudge = 0) {
+                            size_nudge = 0, tooltip = NULL) {
   xmin <- expand_lims(xmin, xmax, size_nudge)[1]
   xmax <- expand_lims(xmin, xmax, size_nudge)[2]
   ymin <- expand_lims(ymin, ymax, size_nudge)[1]
   ymax <- expand_lims(ymin, ymax, size_nudge)[2]
 
-  p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
+  if (!is.null(tooltip)) {
+    p <- plotly::ggplotly(g, width = width * 100, height = height * 100, tooltip = tooltip)
+  } else {
+    p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
+  }
+  
   p <- plotly::layout(p,
     autosize = F,
     margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),

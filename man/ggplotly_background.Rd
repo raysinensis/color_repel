@@ -21,6 +21,7 @@ ggplotly_background(
   ggbuild = NULL,
   crop = TRUE,
   size_nudge = 0,
+  tooltip = NULL,
   ...
 )
 }
@@ -56,6 +57,8 @@ ggplotly_background(
 \item{crop}{whether to call cropping of the background image to remove whitespace}
 
 \item{size_nudge}{slight image size adjustment, default to none}
+
+\item{tooltip}{tooltip vector for ggplotly}
 
 \item{...}{arguments passed to gg_color_repel}
 }
