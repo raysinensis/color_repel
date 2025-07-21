@@ -28,7 +28,6 @@ Imports:
     stringr,
     ggplot2,
     ggrepel,
-    ggalt,
     plotly,
     knitr,
     png,

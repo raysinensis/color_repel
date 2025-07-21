@@ -76,23 +76,6 @@ gg_color_repel <- function(g = ggplot2::last_plot(),
     g <- suppressMessages(g + do.call(eval(parse(text = .f)), c(values = list(newcols), labels = list(labs))))
   }
 
-  if (encircle) {
-    dat <- prep_encircle(g,
-      threshold = encircle_threshold,
-      nmin = encircle_nmin, downsample = downsample, seed = seed,
-      ggbuild = ggbuild
-    )
-    g <- g + ggalt::geom_encircle(
-      data = dat,
-      ggplot2::aes(x = x, y = y, fill = group),
-      expand = encircle_expand,
-      s_shape = encircle_shape,
-      alpha = encircle_alpha,
-      show.legend = FALSE
-    )
-    g <- suppressMessages(g + do.call(eval(parse(text = "ggplot2:::scale_fill_manual")), c(values = list(newcols))))
-  }
-
   if (mascarade) {
     # dat <- prep_mascarade(g, ggbuild = ggbuild, labs = labs)
     g <- g + ggplot2::geom_path(data = dat, ggplot2::aes(x = x, y = y, color = group), alpha = 0.5)
