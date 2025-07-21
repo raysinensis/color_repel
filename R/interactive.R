@@ -21,7 +21,6 @@
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
 #'   ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
 #' new_colors <- color_repel(a)
-#' b <- ggplotly_background(a, filename = NULL)
 #' @return plotly object with background image of layers unsupported by plotly
 #' @export
 ggplotly_background <- function(g, repel_color = TRUE,

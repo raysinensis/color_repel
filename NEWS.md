@@ -1,3 +1,6 @@
+# Changes in version 0.4.3 (2025-07-21)
+* Temporarily disabled ggalt dependency due to ggalt potentially being archived
+
 # Changes in version 0.4.2 (2025-04-15)
 * Expose tooltip argument for ggplotly
 
