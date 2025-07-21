@@ -72,5 +72,4 @@ Prepare ggplot object to ggplotly-compatible layer and image layer
 a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
   ggplot2::geom_point(ggplot2::aes(color = as.factor(cyl)))
 new_colors <- color_repel(a)
-b <- ggplotly_background(a, filename = NULL)
 }
