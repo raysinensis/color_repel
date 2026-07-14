@@ -29,6 +29,7 @@ devtools::install_github("https://github.com/raysinensis/color_repel")
 
 library(colorrepel)
 ?gg_color_repel # overall wrapper function
+?scale_color_repel # now compatible with ggplot grammar
 ```
 
 ### Examples

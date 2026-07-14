@@ -35,13 +35,13 @@ gg_color_repel(
 
 \item{col}{colour or fill in ggplot}
 
-\item{sim}{passing a colorbind simulation function if needed}
+\item{sim}{passing a colorblind simulation function if needed}
 
 \item{severity}{severity of the color vision defect, between 0 and 1}
 
 \item{verbose}{whether to print messages}
 
-\item{downsample}{downsample when too many datapoints are present}
+\item{downsample}{downsample when too many data points are present}
 
 \item{nsamp}{how many random sampling color combinations to test, default 50000}
 

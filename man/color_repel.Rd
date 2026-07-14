@@ -32,7 +32,7 @@ color_repel(
 
 \item{nsamp}{how many random sampling color combinations to test, default 50000}
 
-\item{sim}{passing a colorbind simulation function if needed}
+\item{sim}{passing a colorblind simulation function if needed}
 
 \item{severity}{severity of the color vision defect, between 0 and 1}
 

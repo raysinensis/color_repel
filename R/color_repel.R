@@ -4,7 +4,7 @@
 #' @param groups groups corresponding to color/fill, default is inferred
 #' @param nsamp how many random sampling color combinations to test, default 50000
 #' @param polychrome_recolor whether to replace the original colors with polychrome creation
-#' @param sim passing a colorbind simulation function if needed
+#' @param sim passing a colorblind simulation function if needed
 #' @param severity severity of the color vision defect, between 0 and 1
 #' @param verbose whether to print messages
 #' @param downsample downsample when too many datapoints are present, or use chull

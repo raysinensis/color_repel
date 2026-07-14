@@ -7,9 +7,9 @@
 matrix2_score(dist1, dist2)
 }
 \arguments{
-\item{dist1}{distanct matrix 1}
+\item{dist1}{distance matrix 1}
 
-\item{dist2}{distanct matrix 2}
+\item{dist2}{distance matrix 2}
 }
 \value{
 numeric score

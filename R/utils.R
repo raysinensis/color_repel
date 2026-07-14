@@ -9,8 +9,8 @@ create_polychrome <- function(n) {
 
 
 #' Score matrix distances
-#' @param dist1 distanct matrix 1
-#' @param dist2 distanct matrix 2
+#' @param dist1 distance matrix 1
+#' @param dist2 distance matrix 2
 #' @return numeric score
 matrix2_score <- function(dist1, dist2) {
   temp <- dist1 * dist2
@@ -18,8 +18,8 @@ matrix2_score <- function(dist1, dist2) {
 }
 
 #' Score matrix distances in multiple combinations
-#' @param dist1 distanct matrix 1
-#' @param dist2 distanct matrix 2
+#' @param dist1 distance matrix 1
+#' @param dist2 distance matrix 2
 #' @param n number of iterations
 #' @param verbose whether to output more messages
 #' @param seed random seed
