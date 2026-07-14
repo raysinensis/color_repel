@@ -1,3 +1,7 @@
+# Changes in version 0.5.0 (2026-07-17)
+* Expore more args in scale_color_repel,scale_fill_repel
+* Run styler and fix typos
+
 # Changes in version 0.5.0 (2026-07-13)
 * Added scale_color_repel,scale_fill_repel for ggplot grammar
 

@@ -31,7 +31,8 @@ Imports:
     plotly,
     knitr,
     png,
-    Polychrome
+    Polychrome,
+    mascarade
 Suggests:
     colorspace
 URL: https://github.com/raysinensis/color_repel
