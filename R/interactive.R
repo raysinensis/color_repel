@@ -88,7 +88,6 @@ ggplotly_background <- function(g, repel_color = TRUE,
     } else {
       tempbg <- background
     }
-    
   }
 
   ggplotly_withbg(b, xmin, xmax, ymin, ymax, filename = tempbg, alpha = background_alpha, size_nudge = size_nudge, tooltip)
@@ -158,7 +157,7 @@ ggplotly_withbg <- function(g, xmin, xmax, ymin, ymax, filename = "temp.png",
   } else {
     p <- plotly::ggplotly(g, width = width * 100, height = height * 100)
   }
-  
+
   p <- plotly::layout(p,
     autosize = F,
     margin = list(l = 0, r = 0, b = 0, t = 0, pad = 0, autoexpand = T),

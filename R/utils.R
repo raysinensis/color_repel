@@ -407,10 +407,11 @@ check_colour_mapping <- function(g,
 #' @param collapse_to_cluster instead of reporting min distance to cluster per cell, summarize to cluster level
 #' @return min distance matrix
 calc_distance <- function(
-    coord,
-    metadata,
-    cluster_col = "cluster",
-    collapse_to_cluster = FALSE) {
+  coord,
+  metadata,
+  cluster_col = "cluster",
+  collapse_to_cluster = FALSE
+) {
   distm <- distances::distances(coord)
   res <- average_clusters(distm,
     metadata,
