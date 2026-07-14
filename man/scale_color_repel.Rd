@@ -18,6 +18,9 @@ scale_color_repel(
   autoswitch = TRUE,
   layer = 1,
   out_worst = FALSE,
+  label_repel = FALSE,
+  encircle = FALSE,
+  mascarade = FALSE,
   ...
 )
 
@@ -33,6 +36,9 @@ scale_colour_repel(
   autoswitch = TRUE,
   layer = 1,
   out_worst = FALSE,
+  label_repel = FALSE,
+  encircle = FALSE,
+  mascarade = FALSE,
   ...
 )
 
@@ -48,6 +54,9 @@ scale_fill_repel(
   autoswitch = TRUE,
   layer = 1,
   out_worst = FALSE,
+  label_repel = FALSE,
+  encircle = FALSE,
+  mascarade = FALSE,
   ...
 )
 }
@@ -73,6 +82,12 @@ scale_fill_repel(
 \item{layer}{layer to detect color, defaults to first}
 
 \item{out_worst}{output the worst combination instead of best}
+
+\item{label_repel}{whether to add centroid labels with ggrepel}
+
+\item{encircle}{whether to draw convex hull outlines by cluster}
+
+\item{mascarade}{use mascarade package to outline clusters}
 
 \item{...}{passed to \code{\link[ggplot2:scale_manual]{ggplot2::scale_color_manual()}} or
 \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual()}}}
