@@ -29,6 +29,7 @@ devtools::install_github("https://github.com/raysinensis/color_repel")
 
 library(colorrepel)
 ?gg_color_repel # overall wrapper function
+?scale_color_repel # now compatible with ggplot grammar
 ```
 
 ### Examples
@@ -38,6 +39,7 @@ a <- Seurat::DimPlot(so, group.by = "type", pt.size = 0.5)
 b <- a + scale_color_manual(values = color_repel(a, sim = colorspace::tritan))
 cowplot::plot_grid(a, b, 
                    labels = c("original", "color_repel"))
+# now also works with a + scale_color_repel(); a + scale_fill_repel()
 ```
 
 <img align="center" width="700" height="300" src="inst/scRNAseqUMAP_example.png">

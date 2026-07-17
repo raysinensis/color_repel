@@ -9,8 +9,8 @@ create_polychrome <- function(n) {
 
 
 #' Score matrix distances
-#' @param dist1 distanct matrix 1
-#' @param dist2 distanct matrix 2
+#' @param dist1 distance matrix 1
+#' @param dist2 distance matrix 2
 #' @return numeric score
 matrix2_score <- function(dist1, dist2) {
   temp <- dist1 * dist2
@@ -18,8 +18,8 @@ matrix2_score <- function(dist1, dist2) {
 }
 
 #' Score matrix distances in multiple combinations
-#' @param dist1 distanct matrix 1
-#' @param dist2 distanct matrix 2
+#' @param dist1 distance matrix 1
+#' @param dist2 distance matrix 2
 #' @param n number of iterations
 #' @param verbose whether to output more messages
 #' @param seed random seed
@@ -407,10 +407,11 @@ check_colour_mapping <- function(g,
 #' @param collapse_to_cluster instead of reporting min distance to cluster per cell, summarize to cluster level
 #' @return min distance matrix
 calc_distance <- function(
-    coord,
-    metadata,
-    cluster_col = "cluster",
-    collapse_to_cluster = FALSE) {
+  coord,
+  metadata,
+  cluster_col = "cluster",
+  collapse_to_cluster = FALSE
+) {
   distm <- distances::distances(coord)
   res <- average_clusters(distm,
     metadata,
@@ -824,10 +825,10 @@ prep_mascarade <- function(g, ggbuild, labs) {
   em <- dplyr::select(g$data[[1]], c(x, y))
   clust <- g$data[[1]]$group
 
-  # dat <- mascarade::generateMask(
-  #   dims = em,
-  #   clusters = clust
-  # )
+  dat <- mascarade::generateMask(
+    dims = em,
+    clusters = clust
+  )
 
   if (!is.null(labs)) {
     dict <- data.frame(cluster = sort(unique(dat$cluster)), labs = labs)
