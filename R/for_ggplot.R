@@ -15,6 +15,7 @@
 #' @param autoswitch try to switch between colour and fill automatically
 #' @param layer layer to detect color, defaults to first
 #' @param out_worst output the worst combination instead of best
+#' @param repel_legend_weight also repel colors so similar colors are not next to each other in the legend (0 = all based on plot distance, 1 = all based on legend, default 0.5)
 #' @param label_repel whether to add centroid labels with ggrepel
 #' @param encircle whether to draw convex hull outlines by cluster
 #' @param mascarade use mascarade package to outline clusters
@@ -40,6 +41,7 @@ scale_color_repel <- function(nsamp = 50000,
                               autoswitch = TRUE,
                               layer = 1,
                               out_worst = FALSE,
+                              repel_legend_weight = 0.5,
                               label_repel = FALSE,
                               encircle = FALSE,
                               mascarade = FALSE,
@@ -57,7 +59,8 @@ scale_color_repel <- function(nsamp = 50000,
         col = col,
         autoswitch = autoswitch,
         layer = layer,
-        out_worst = out_worst
+        out_worst = out_worst,
+        repel_legend_weight = repel_legend_weight
       ),
       annotation_params = list(
         label_repel = label_repel,
@@ -87,6 +90,7 @@ scale_fill_repel <- function(nsamp = 50000,
                              autoswitch = TRUE,
                              layer = 1,
                              out_worst = FALSE,
+                             repel_legend_weight = 0.5,
                              label_repel = FALSE,
                              encircle = FALSE,
                              mascarade = FALSE,
@@ -103,6 +107,7 @@ scale_fill_repel <- function(nsamp = 50000,
     autoswitch = autoswitch,
     layer = layer,
     out_worst = out_worst,
+    repel_legend_weight = repel_legend_weight,
     label_repel = label_repel,
     encircle = encircle,
     mascarade = mascarade,

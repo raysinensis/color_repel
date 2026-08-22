@@ -1,5 +1,8 @@
+# Changes in version 0.5.2 (2026-08-22)
+* Repel colors based on legend, default weight at 0.5 (equal weight to distances on plot)
+
 # Changes in version 0.5.1 (2026-07-17)
-* Expore more args in scale_color_repel,scale_fill_repel
+* Expose more args in scale_color_repel,scale_fill_repel
 * Run styler and fix typos
 
 # Changes in version 0.5.0 (2026-07-13)

@@ -14,6 +14,7 @@
 #' @param layer layer to detect color, defaults to first
 #' @param out_orig output the original colors as named vector
 #' @param out_worst output the worst combination instead of best
+#' @param repel_legend_weight also repel colors so similar colors are not next to each other in the legend (0 = all based on plot distance, 1 = all based on legend, default 0.5)
 #' @param ggbuild already built ggplot_built object if available
 #' @examples
 #' a <- ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(displ, hwy)) +
@@ -37,6 +38,7 @@ color_repel <- function(g,
                         layer = 1,
                         out_orig = FALSE,
                         out_worst = FALSE,
+                        repel_legend_weight = 0.5,
                         ggbuild = NULL) {
   g <- check_patchwork(g)
 
@@ -116,6 +118,7 @@ color_repel <- function(g,
     }
     # min distance between clusters on plot
     cdist <- suppressMessages(calc_distance(em, clust))
+    # min distance between clusters on legend
     if (verbose) {
       message("extract plot distances (part 2)...")
     }
@@ -133,6 +136,16 @@ color_repel <- function(g,
     cdist <- as.matrix(stats::dist(data.frame(x = unique(g2$data[[1]]$group))))
     cdist <- cdist^2
   }
+  # min distance between clusters on legend
+  ldist <- as.matrix(stats::dist(data.frame(x = 1:length(orig_cols))))
+  ldist <- ldist^2
+  # use both
+  weight_cdist <-  max(ldist, na.rm = T) / max(cdist, na.rm = T) * (1-repel_legend_weight)
+  weight_ldist <-  repel_legend_weight
+  cdist2 <- cdist*weight_cdist
+  ldist2 <- ldist*weight_ldist
+  cdist <- cdist2+ldist2
+  
   if (is.null(nsamp)) {
     nsamp <- min(factorial(ncol(cdist)) * 5, 20000)
   }
